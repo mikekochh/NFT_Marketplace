@@ -40,6 +40,7 @@ import arrow from './arrow.png';
 import Xlogo from './Xlogo.png';
 import github from './github.png';
 import mkLogo from './mkLogo.png';
+import linkedin from './linkedin.png';
 
 export default {
   heartOutline,
@@ -84,4 +85,5 @@ export default {
   Xlogo,
   github,
   mkLogo,
+  linkedin,
 };
