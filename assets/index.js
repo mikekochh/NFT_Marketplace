@@ -39,6 +39,7 @@ import loader from './loader.gif';
 import arrow from './arrow.png';
 import Xlogo from './Xlogo.png';
 import github from './github.png';
+import mkLogo from './mkLogo.png';
 
 export default {
   heartOutline,
@@ -82,4 +83,5 @@ export default {
   arrow,
   Xlogo,
   github,
+  mkLogo,
 };

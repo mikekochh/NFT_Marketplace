@@ -9,6 +9,11 @@
     background: linear-gradient(101.12deg, #EB1484 27.35%, #C91CC3 99.99%, #C81CC5 100%, #C81CC5 100%);
 }
 
+.real-estate-button {
+    background: rgb(45,45,45);
+    background: linear-gradient(0deg, rgba(45,45,45,1) 0%, rgba(103,103,103,1) 100%);
+}
+
 .white-bg {
     background: rgba(255, 255, 255, 0.2);
 }
