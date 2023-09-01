@@ -22,16 +22,16 @@ import nft8 from './nft8.png';
 import nft9 from './nft9.png';
 import nft10 from './nft10.jpg';
 import creator from './creator.png';
-import creator1 from './creator1.png';
-import creator2 from './creator2.png';
-import creator3 from './creator3.png';
-import creator4 from './creator4.png';
-import creator5 from './creator5.png';
-import creator6 from './creator6.png';
-import creator7 from './creator7.png';
-import creator8 from './creator8.png';
-import creator9 from './creator9.png';
-import creator10 from './creator10.jpg';
+import owner1 from './owner1.png';
+import owner2 from './owner2.png';
+import owner3 from './owner3.png';
+import owner4 from './owner4.png';
+import owner5 from './owner5.png';
+import owner6 from './owner6.png';
+import owner7 from './owner7.png';
+import owner8 from './owner8.png';
+import owner9 from './owner9.png';
+import owner10 from './owner10.png';
 import right from './right.png';
 import left from './left.png';
 import headerbg from './headerbg.png';
@@ -69,16 +69,16 @@ export default {
   nft9,
   nft10,
   creator,
-  creator1,
-  creator2,
-  creator3,
-  creator4,
-  creator5,
-  creator6,
-  creator7,
-  creator8,
-  creator9,
-  creator10,
+  owner1,
+  owner2,
+  owner3,
+  owner4,
+  owner5,
+  owner6,
+  owner7,
+  owner8,
+  owner9,
+  owner10,
   right,
   left,
   headerbg,

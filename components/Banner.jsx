@@ -5,7 +5,7 @@ const Banner = ({ parentStyles, bannerImage, bannerName }) => (
   <div className={`object-fill relative w-full flex items-center z-0 overflow-hidden ${parentStyles}`}>
     <Image src={bannerImage} />
     <div className="absolute inset-0 flex items-center justify-center">
-      <p className="dark:text-white text-black text-4xl font-bold">{bannerName}</p>
+      <p className="dark:text-white text-nft-black text-4xl font-bold">{bannerName}</p>
     </div>
   </div>
 );
