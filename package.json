@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "git": "git add . && git commit -m",
+    "postgit": "git push --all"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "2.0.5",
