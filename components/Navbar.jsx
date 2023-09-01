@@ -1,5 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
-import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -61,6 +60,10 @@ const Navbar = () => {
           </div>
         </Link>
       </div>
+
+      {/* <div className="justify-between md:w-1/2 w-1/3">
+        <p className="font-poppins lg:text-2xl pr-4 text-4xl md:text-xl sm:text-sm ">Real NFT Estates</p>
+      </div> */}
 
       {/* Section for light dark mode switch, larger devices */}
       <div className="flex flex-initial flex-row justify-end">

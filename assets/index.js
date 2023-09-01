@@ -41,6 +41,8 @@ import Xlogo from './Xlogo.png';
 import github from './github.png';
 import mkLogo from './mkLogo.png';
 import linkedin from './linkedin.png';
+import bannerNight from './bannerNight.jpg';
+import bannerDay from './bannerDay.jpg';
 
 export default {
   heartOutline,
@@ -86,4 +88,6 @@ export default {
   github,
   mkLogo,
   linkedin,
+  bannerNight,
+  bannerDay,
 };
