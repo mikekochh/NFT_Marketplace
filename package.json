@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "git": "git add . && git commit -m",
-    "postgit": "git push --all"
+    "postgit": "git push --all",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "2.0.5",
