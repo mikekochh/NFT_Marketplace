@@ -7,21 +7,18 @@ import cross from './cross.png';
 import logo02 from './logo02.png';
 import menu from './menu.png';
 import discord from './discord.png';
-import instagram from './instagram.png';
-import telegram from './telegram.png';
 import twitter from './twitter.png';
 import upload from './upload.png';
-import nft1 from './nft1.png';
-import nft2 from './nft2.png';
-import nft3 from './nft3.png';
-import nft4 from './nft4.png';
-import nft5 from './nft5.png';
-import nft6 from './nft6.jpeg';
-import nft7 from './nft7.png';
-import nft8 from './nft8.png';
-import nft9 from './nft9.png';
-import nft10 from './nft10.jpg';
-import creator from './creator.png';
+import estate1 from './estate1.png';
+import estate2 from './estate2.png';
+import estate3 from './estate3.png';
+import estate4 from './estate4.png';
+import estate5 from './estate5.png';
+import estate6 from './estate6.png';
+import estate7 from './estate7.png';
+import estate8 from './estate8.png';
+import estate9 from './estate9.png';
+import estate10 from './estate10.png';
 import owner1 from './owner1.png';
 import owner2 from './owner2.png';
 import owner3 from './owner3.png';
@@ -34,7 +31,6 @@ import owner9 from './owner9.png';
 import owner10 from './owner10.png';
 import right from './right.png';
 import left from './left.png';
-import headerbg from './headerbg.png';
 import loader from './loader.gif';
 import arrow from './arrow.png';
 import Xlogo from './Xlogo.png';
@@ -54,21 +50,18 @@ export default {
   logo02,
   menu,
   discord,
-  instagram,
-  telegram,
   twitter,
   upload,
-  nft1,
-  nft2,
-  nft3,
-  nft4,
-  nft5,
-  nft6,
-  nft7,
-  nft8,
-  nft9,
-  nft10,
-  creator,
+  estate1,
+  estate2,
+  estate3,
+  estate4,
+  estate5,
+  estate6,
+  estate7,
+  estate8,
+  estate9,
+  estate10,
   owner1,
   owner2,
   owner3,
@@ -81,7 +74,6 @@ export default {
   owner10,
   right,
   left,
-  headerbg,
   loader,
   arrow,
   Xlogo,

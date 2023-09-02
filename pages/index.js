@@ -93,6 +93,7 @@ const Home = () => {
                   seller: `0x${makeId(3)}...${makeId(4)}`,
                   owner: `0x${makeId(3)}...${makeId(4)}`,
                   description: 'Sample Description NFT Estate',
+                  price: (10 - i * 0.234).toFixed(2),
                 }}
               />
             ))}
