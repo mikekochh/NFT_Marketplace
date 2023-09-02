@@ -9,15 +9,6 @@
     background: linear-gradient(101.12deg, #EB1484 27.35%, #C91CC3 99.99%, #C81CC5 100%, #C81CC5 100%);
 }
 
-.diDvWr {
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 100%;
-    z-index: 0;
-    min-width: 100%;
-    justify-content: center;
-}
-
 .gray-gradient {
     background: rgb(45,45,45);
     background: linear-gradient(0deg, rgba(45,45,45,1) 0%, rgba(103,103,103,1) 100%);

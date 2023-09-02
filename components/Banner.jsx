@@ -1,13 +1,20 @@
 import React from 'react';
-import Image from 'next/image';
 
-const Banner = ({ parentStyles, bannerImage, bannerName }) => (
-  <div className={`object-fill relative w-full flex items-center z-0 overflow-hidden ${parentStyles}`}>
-    <Image src={bannerImage} />
-    <div className="absolute inset-0 flex items-center justify-center">
-      <p className="dark:text-white text-nft-black text-4xl font-bold">{bannerName}</p>
+const Banner = ({ bannerImage, bannerName }) => {
+  console.log(bannerImage);
+
+  return (
+    <div className="relative overflow-hidden">
+      <img
+        className="w-full h-72 object-cover"
+        src={bannerImage}
+        alt="bannerDubai"
+      />
+      <div className="absolute inset-0 flex items-center justify-center">
+        <p className="dark:text-nft-black text-nft-black text-4xl font-bold">{bannerName}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Banner;
