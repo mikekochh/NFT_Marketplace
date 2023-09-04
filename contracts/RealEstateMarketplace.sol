@@ -100,7 +100,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
         _;
     }
 
-    constructor() {
+    constructor() ERC721("NFT Estates", "NEST") {
         owner = payable(msg.sender);
     }
 
@@ -194,7 +194,6 @@ contract RealEstateMarketplace is ERC721URIStorage {
 
     function fetchMyProperties() public view returns (Property[] memory) {
         uint256 totalItemCount = _tokenIds.current();
-        uint256 itemCount = 0;
         uint256 currentIndex = 0;
 
         Property[] memory myProperties = new Property[](getMyNumberOfProperties());
@@ -211,7 +210,6 @@ contract RealEstateMarketplace is ERC721URIStorage {
 
     function fetchMyListedProperties() public view returns (Property[] memory) {
         uint256 totalItemCount = _tokenIds.current();
-        uint256 itemCount = 0;
         uint256 currentIndex = 0;
 
         Property[] memory myListedProperties = new Property[](getMyNumberOfListedProperties());
