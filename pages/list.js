@@ -1,5 +1,4 @@
-import { useState, useMemo, useCallback, useContext } from 'react';
-import { useRouter } from 'next/router';
+import { useState, useMemo, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
