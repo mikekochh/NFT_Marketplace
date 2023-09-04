@@ -29,8 +29,10 @@ import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import { console } from "hardhat/console.sol";
 
-contract NFTMarketplace is ERC721URIStorage {
-    error NFTMarketplace__MustBeOwner();
+contract RealEstateMarketplace is ERC721URIStorage {
+    error RealEstateMarketplace__MustBeOwner();
+    error RealEstateMarketplace__GreaterThanZero();
+    error RealEstateMarketplace__ValueMustEqualListingPrice();
 
     using Counters for Counters.Counter;
 
@@ -41,29 +43,31 @@ contract NFTMarketplace is ERC721URIStorage {
 
     address payable owner;
 
-    mapping(uint256 => MarketItem) private idToMarketItem;
+    mapping(uint256 => Property) private idToProperty;
 
-    struct MarketItem {
+    struct Property {
         uint256 tokenId;
-        address payable seller;
         address payable owner;
         uint256 price;
-        bool sold; // not sure if I need this
     }
 
-    event MarketItemCreated (
+    event PropertyListed (
         uint256 indexed tokenId,
-        address seller,
         address owner,
-        uint256 price,
-        bool sold
+        uint256 price
     );
 
     modifier MustBeOwner(address user) {
         if (owner != user) {
-            revert NFTMarketplace__MustBeOwner();
+            revert RealEstateMarketplace__MustBeOwner();
         }
     }
+
+    modifier GreaterThanZero(uint256 amount) {
+        if (amount <= 0) {
+            revert RealEstateMarketplace__GreaterThanZero();
+        }
+    } 
 
     constructor() {
         owner = payable(msg.sender);
@@ -90,8 +94,24 @@ contract NFTMarketplace is ERC721URIStorage {
         return newTokenId;
     }
 
-    function listNewProperty(uint256 tokenId, uint256 price) public {
+    function listNewProperty(uint256 tokenId, uint256 price) private GreaterThanZero(price) {
+        if (msg.value != listingPrice) {
+            revert RealEstateMarketplace__ValueMustEqualListingPrice();
+        }
 
+        idToProperty[tokenId] = Property(
+            tokenId,
+            payable(msg.sender),
+            price
+        );
+
+        _transfer(msg.sender, address(this), tokenId); // I don't understand why ownership of token is transferred to this contract yet
+
+        emit PropertyListed(
+            tokenId,
+            msg.sender,
+            price
+        );
     }
 
 }
