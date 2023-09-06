@@ -9,10 +9,38 @@ import { MarketAddress, MarketAddressAbi } from './constants';
 export const RealEstateContext = React.createContext();
 
 export const RealEstateProvider = ({ children }) => {
-  const currency = 'BTC';
+  const [currentAccount, setCurrentAccount] = useState('');
+  const currency = 'ETH';
+
+  const checkIfWalletIsConnected = async () => {
+    if (!window.ethereum) return alert('Please install MetaMask!');
+
+    const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+
+    if (accounts.length) {
+      setCurrentAccount(accounts[0]);
+      console.log('There are accounts.');
+    } else {
+      console.log('No accounts found');
+    }
+  };
+
+  useEffect(() => {
+    checkIfWalletIsConnected();
+  }, []);
+
+  const connectWallet = async () => {
+    if (!window.ethereum) return alert('Please install MetaMask');
+
+    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+    setCurrentAccount(accounts[0]);
+
+    window.location.reload();
+  };
 
   return (
-    <RealEstateContext.Provider value={{ currency }}>
+    <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount }}>
       {children}
     </RealEstateContext.Provider>
   );

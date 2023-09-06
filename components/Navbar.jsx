@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
+
+import { RealEstateContext } from '../context/RealEstateContext';
 import images from '../assets';
 import Button from './Button';
 
@@ -36,11 +38,13 @@ const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
 };
 
 const ButtonGroup = () => {
-  const hasConnected = false;
+  const { connectWallet, currentAccount } = useContext(RealEstateContext);
 
-  return !hasConnected ? (
-    <Button classStyles="mx-2 rounded-xl" btnName="Connect" handleClick={() => {}} />
-  ) : null;
+  console.log({ currentAccount });
+
+  return currentAccount ? <div /> : (
+    <Button classStyles="mx-2 rounded-xl" btnName="Connect" handleClick={() => connectWallet()} />
+  );
 };
 
 const Navbar = () => {
