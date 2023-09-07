@@ -1,8 +1,9 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
+import { RealEstateContext } from '../context/RealEstateContext';
 import { Button, Input } from '../components';
 import images from '../assets';
 
@@ -10,13 +11,20 @@ const List = () => {
   const [fileUrl, setFileUrl] = useState(null);
   const [formInput, setFormInput] = useState({ price: '', name: '', description: '' });
   const { theme } = useTheme();
+  const { uploadToIPFS } = useContext(RealEstateContext);
 
-  const onDrop = useCallback(() => {
+  const onDrop = useCallback(async (acceptedFile) => {
     // upload image to the ipfs
-  });
+    const url = await uploadToIPFS(acceptedFile);
+
+    console.log({ url });
+    console.log('url: ', url);
+
+    setFileUrl(url);
+  }, []);
 
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
-    onDrop: onDrop(),
+    onDrop,
     accept: 'image/*',
     maxSize: 5000000,
   });
