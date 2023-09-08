@@ -9,6 +9,8 @@ import { MarketAddress, MarketAddressAbi } from './constants';
 
 export const RealEstateContext = React.createContext();
 
+const https = require('https');
+
 export const RealEstateProvider = ({ children }) => {
   const [currentAccount, setCurrentAccount] = useState('');
   const currency = 'ETH';
@@ -40,7 +42,47 @@ export const RealEstateProvider = ({ children }) => {
     window.location.reload();
   };
 
-  const uploadToIPFS = async (file) => {
+  const uploadToIPFS = async (file) => { };
+
+  /// //////////////////////////
+  // testing code /////////////
+  /// //////////////////////////
+
+  const uploadToIPFS4 = async (file) => {
+    const projectId = '2V2vAmc5cvXm85Qe68gp5kpd5eQ';
+    const projectSecretKey = '1466dc2cf451ec5583a9b56bd0c04e81';
+    const auth = `Basic ${Buffer.from(`${projectId}:${projectSecretKey}`).toString('base64')}`;
+
+    const res = await axios.post('https://ipfs.infura.io:5001/api/v0/add?pin=true&wrap-with-directory=true', file[0], { headers: { Authorization: auth } });
+
+    console.log('res: ', res);
+  };
+
+  const uploadToIPFS3 = async (file) => {
+    const projectId = '2V2vAmc5cvXm85Qe68gp5kpd5eQ';
+    const projectSecretKey = '1466dc2cf451ec5583a9b56bd0c04e81';
+
+    const options = {
+      host: 'ipfs.infura.io',
+      port: 5001,
+      path: `/api/v0/add?arg=${file[0]}`,
+      method: 'POST',
+      auth: `${projectId}:${projectSecretKey}`,
+    };
+
+    const req = https.request(options, (res) => {
+      let body = '';
+      res.on('data', (chunk) => {
+        body += chunk;
+      });
+      res.on('end', () => {
+        console.log(body);
+      });
+    });
+    req.end();
+  };
+
+  const uploadToIPFS2 = async (file) => {
     const projectId = '2V2vAmc5cvXm85Qe68gp5kpd5eQ';
     const projectSecretKey = '1466dc2cf451ec5583a9b56bd0c04e81';
     // const projectId = process.env.REACT_APP_PROJECT_ID;
@@ -74,21 +116,6 @@ export const RealEstateProvider = ({ children }) => {
       console.log('There was an error uploading to IPFS: ', e);
     }
   };
-
-  // const uploadToIPFS = async (file) => {
-  //   const formData = new FormData();
-  //   formData.append('file', file);
-
-  //   // 'https://ipfs.infura.io:5001/api/v0/add'
-
-  //   const { data } = await axios.post('http://127.0.0.1:5001/api/v0/', formData, {
-  //     headers: {
-  //       'Content-Type': 'multipart/form-data',
-  //     },
-  //   });
-
-  //   return `https://ipfs.infura.io/ipfs/${data.Hash}`;
-  // };
 
   return (
     <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount, uploadToIPFS }}>

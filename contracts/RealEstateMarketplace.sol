@@ -166,12 +166,12 @@ contract RealEstateMarketplace is ERC721URIStorage {
         idToProperty[tokenId].seller = payable(address(0));
         idToProperty[tokenId].sold = true;
 
-        _propertiesSold.increment(); // I don't understand the purpose of this function yet, or this list of items sold. 
+        _propertiesSold.increment(); 
 
         _transfer(address(this), msg.sender, tokenId);
 
-        payable(owner).transfer(listingPrice); // this is the fee that the owner of the contract gets for listing a property.
-        payable(idToProperty[tokenId].seller).transfer(msg.value); // this is the amount that the seller gets for selling the property.
+        payable(owner).transfer(listingPrice); 
+        payable(idToProperty[tokenId].seller).transfer(msg.value); 
     }
 
     // get all market items still listed and not sold
