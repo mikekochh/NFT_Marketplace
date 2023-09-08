@@ -1,42 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-// Layout of Contract:
-// version
-// imports
-// errors
-// interfaces, libraries, contracts
-// Type declarations
-// State variables
-// Events
-// Modifiers
-// Functions
-
-// Layout of Functions:
-// constructor
-// receive function (if exists)
-// fallback function (if exists)
-// external
-// public
-// internal
-// private
-// internal & private view & pure functions
-// external & public view & pure functions
-
 import { Counters } from "@openzeppelin/contracts/utils/Counters.sol";
 import { ERC721URIStorage } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 import { console } from "hardhat/console.sol";
-
-/**
-    * @title RealEstateMarketplace
-    * @dev This contract allows users to create and list properties for sale, and allows other users to purchase those properties.
-    * @author Michael Koch
-    * Improvements to make once tutorial is done:
-    * 1. Add a function that allows users to upload a property, but not list it for sale.
-    * 2. Do we really need the sold variable? I don't think so.
- */
 
 contract RealEstateMarketplace is ERC721URIStorage {
     error RealEstateMarketplace__MustBeOwner();
@@ -48,13 +17,13 @@ contract RealEstateMarketplace is ERC721URIStorage {
     using Counters for Counters.Counter;
 
     Counters.Counter private _tokenIds;
-    Counters.Counter private _propertiesSold; // should be properties listed for sale
+    Counters.Counter private _propertiesSold; 
 
-    uint256 listingPrice = 0.025 ether; // this is what someone pays for listing a property on website. I think that this will be the initial price of the property. So it is not always going to be 0.025 ether
+    uint256 listingPrice = 0.025 ether; 
 
-    address payable owner;
+    address payable s_owner;
 
-    mapping(uint256 => Property) private idToProperty;
+    mapping(uint256 => Property) private s_idToProperty;
 
     struct Property {
         uint256 tokenId;
@@ -73,7 +42,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
     );
 
     modifier MustBeOwner(address user) {
-        if (owner != user) {
+        if (s_owner != user) {
             revert RealEstateMarketplace__MustBeOwner();
         }
         _;
@@ -101,7 +70,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
     }
 
     constructor() ERC721("NFT Estates", "NEST") {
-        owner = payable(msg.sender);
+        s_owner = payable(msg.sender);
     }
 
     function updateListingPrice(uint256 _listingPrice) public payable MustBeOwner(msg.sender) {
@@ -125,9 +94,8 @@ contract RealEstateMarketplace is ERC721URIStorage {
         return newTokenId;
     }
 
-    // for this function, I believe we want the ability for user to upload a property, but not list it for sale. This function assumes that owner wants to sell property. Well come back to this
     function listNewProperty(uint256 tokenId, uint256 price) private GreaterThanZero(price) ValueMustEqualListingPrice {
-        idToProperty[tokenId] = Property(
+        s_idToProperty[tokenId] = Property(
             tokenId,
             payable(msg.sender),
             payable(address(this)),
@@ -135,7 +103,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
             false
         );
 
-        _transfer(msg.sender, address(this), tokenId); // Contract needs to be owner to sell property for previous owner. 
+        _transfer(msg.sender, address(this), tokenId); 
 
         emit PropertyListed(
             tokenId,
@@ -147,31 +115,31 @@ contract RealEstateMarketplace is ERC721URIStorage {
     }
 
     function resellToken(uint256 tokenId, uint256 price) public payable GreaterThanZero(price) ValueMustEqualListingPrice {
-        if (idToProperty[tokenId].owner != msg.sender) {
+        if (s_idToProperty[tokenId].owner != msg.sender) {
             revert RealEstateMarketplace__MustBeOwner();
         }
 
-        idToProperty[tokenId].price = price;
-        idToProperty[tokenId].seller = payable(msg.sender);
-        idToProperty[tokenId].owner = payable(address(this));
-        idToProperty[tokenId].sold = false;
+        s_idToProperty[tokenId].price = price;
+        s_idToProperty[tokenId].seller = payable(msg.sender);
+        s_idToProperty[tokenId].owner = payable(address(this));
+        s_idToProperty[tokenId].sold = false;
 
         _propertiesSold.decrement();
 
         _transfer(msg.sender, address(this), tokenId);
     }
 
-    function createPropertySale(uint256 tokenId) public payable MatchAskingPrice(idToProperty[tokenId].price) {
-        idToProperty[tokenId].owner = payable(msg.sender);
-        idToProperty[tokenId].seller = payable(address(0));
-        idToProperty[tokenId].sold = true;
+    function createPropertySale(uint256 tokenId) public payable MatchAskingPrice(s_idToProperty[tokenId].price) {
+        s_idToProperty[tokenId].owner = payable(msg.sender);
+        s_idToProperty[tokenId].seller = payable(address(0));
+        s_idToProperty[tokenId].sold = true;
 
         _propertiesSold.increment(); 
 
         _transfer(address(this), msg.sender, tokenId);
 
-        payable(owner).transfer(listingPrice); 
-        payable(idToProperty[tokenId].seller).transfer(msg.value); 
+        payable(s_owner).transfer(listingPrice); 
+        payable(s_idToProperty[tokenId].seller).transfer(msg.value); 
     }
 
     // get all market items still listed and not sold
@@ -183,8 +151,8 @@ contract RealEstateMarketplace is ERC721URIStorage {
         Property[] memory unsoldProperties = new Property[](unsoldPropertyCount);
 
         for (uint256 i = 1; i <= propertyCount; i++) {
-            if(idToProperty[i].owner == address(this)) {
-                unsoldProperties[currentIndex] = idToProperty[i];
+            if(s_idToProperty[i].owner == address(this)) {
+                unsoldProperties[currentIndex] = s_idToProperty[i];
                 currentIndex += 1;
             }
         }
@@ -199,8 +167,8 @@ contract RealEstateMarketplace is ERC721URIStorage {
         Property[] memory myProperties = new Property[](getMyNumberOfProperties());
 
         for (uint256 i = 1; i <= totalItemCount; i++) {
-            if (idToProperty[i].owner == msg.sender) {
-                myProperties[currentIndex] = idToProperty[i];
+            if (s_idToProperty[i].owner == msg.sender) {
+                myProperties[currentIndex] = s_idToProperty[i];
                 currentIndex += 1;
             }
         }
@@ -215,8 +183,8 @@ contract RealEstateMarketplace is ERC721URIStorage {
         Property[] memory myListedProperties = new Property[](getMyNumberOfListedProperties());
 
         for (uint256 i = 1; i <= totalItemCount; i++) {
-            if (idToProperty[i].seller == msg.sender) {
-                myListedProperties[currentIndex] = idToProperty[i];
+            if (s_idToProperty[i].seller == msg.sender) {
+                myListedProperties[currentIndex] = s_idToProperty[i];
                 currentIndex += 1;
             }
         }
@@ -229,7 +197,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
         uint256 itemCount = 0;
 
         for (uint256 i = 1; i <= totalItemCount; i++) { 
-            if (idToProperty[i].owner == msg.sender) {
+            if (s_idToProperty[i].owner == msg.sender) {
                 itemCount += 1;
             }
         }
@@ -242,12 +210,22 @@ contract RealEstateMarketplace is ERC721URIStorage {
         uint256 itemCount = 0;
 
         for (uint256 i = 1; i <= totalItemCount; i++) {
-            if (idToProperty[i].seller == msg.sender) {
+            if (s_idToProperty[i].seller == msg.sender) {
                 itemCount += 1;
             }
         }
 
         return itemCount;
     }
+
+
+    /////////////////////////
+    ///// Getter Methods ////
+    ///////////////////////// 
+    
+    function getOwner() external view returns (address) {
+        return s_owner;
+    } 
+
 
 }
