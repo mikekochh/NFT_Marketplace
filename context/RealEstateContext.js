@@ -3,9 +3,13 @@ import React, { useState, useEffect } from 'react';
 import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
 import axios from 'axios';
+import FormData from 'form-data';
+
 import { create as ipfsHttpClient } from 'ipfs-http-client';
 
 import { MarketAddress, MarketAddressAbi } from './constants';
+
+require('dotenv').config();
 
 export const RealEstateContext = React.createContext();
 
@@ -42,7 +46,30 @@ export const RealEstateProvider = ({ children }) => {
     window.location.reload();
   };
 
-  const uploadToIPFS = async (file) => { };
+  // Pinata
+  const uploadToIPFS = async (file) => {
+    console.log('file[0]:');
+    console.log(file[0]);
+    try {
+      const data = new FormData();
+      data.append('file', file[0]);
+      data.append('pinataOptions', JSON.stringify({ cidVersion: 0 }));
+      data.append('pinataMetadata', JSON.stringify({ name: 'MyCustomName' }));
+
+      console.log('JWT: ', process.env.REACT_APP_PINATA_JWT);
+
+      const res = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', data, {
+        headers: {
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI2MGUxNjhkZC1mZWJjLTQ0ZTktOWQ5OS1lNWY1MWVhMzAxMTMiLCJlbWFpbCI6Im1pY2hhZWxrb2NoNDQ0NEBnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiNjM2N2M5YzM2ZWE3YjZkMDU4M2EiLCJzY29wZWRLZXlTZWNyZXQiOiIyNDlmYmUxMmNkY2Q4OWY0ODYxZWIzNDFjYTBhYzNjMGI2Njg1N2FjOTQ4NDNjOWRmYzQ5NDQzMzNhZWI0NDc0IiwiaWF0IjoxNjk0MTk4NTk5fQ._P-gaXW0okU940CMB69jo5MHB3YyX8l3H88wStpek28',
+        },
+      });
+      console.log('res: ', res);
+      console.log('View the file here: https://gateway.pinata.cloud/ipfs/', res.data.IpfsHash);
+      return `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   /// //////////////////////////
   // testing code /////////////
