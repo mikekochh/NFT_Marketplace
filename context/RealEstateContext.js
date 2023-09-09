@@ -4,6 +4,7 @@ import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
 import axios from 'axios';
 import FormData from 'form-data';
+// import { pinataSDK } from '@pinata/sdk';
 
 import { MarketAddress, MarketAddressAbi } from './constants';
 
@@ -48,6 +49,7 @@ export const RealEstateProvider = ({ children }) => {
       data.append('file', file[0]);
       data.append('pinataOptions', JSON.stringify({ cidVersion: 0 }));
       data.append('pinataMetadata', JSON.stringify({ name: file[0].name }));
+      data.append('pinataContent', JSON.stringify({ name: file[0].name }));
 
       console.log('data', data);
 
@@ -81,17 +83,41 @@ export const RealEstateProvider = ({ children }) => {
     console.log('contract', contract);
   };
 
+  // const createNFT = async (formInput, fileUrl, router) => {
+  //   const { name, description, price } = formInput;
+  //   if (!name || !description || !price || !fileUrl) return alert('Please fill in all fields');
+
+  //   const data = new FormData();
+  //   data.append('pinataMetadata', JSON.stringify({ name, description, image: fileUrl }));
+
+  //   try {
+  //     const response = await fetch('/api/uploadToPinata', {
+  //       method: 'POST',
+  //       body: data,
+  //     });
+
+  //     console.log('Are we getting here? Hey: ', response.ok);
+  //     console.log('response: ', response);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
   const createNFT = async (formInput, fileUrl, router) => {
+    console.log('createNFT');
     const { name, description, price } = formInput;
     if (!name || !description || !price || !fileUrl) return alert('Please fill in all fields');
 
     const data = new FormData();
-    data.append('pinataMetadata', JSON.stringify({ name, description, image: fileUrl }));
+    data.append('pinataMetadata', JSON.stringify({ name }));
+    data.append('pinataContent', JSON.stringify({ name, description, image: fileUrl }));
+
+    const json = JSON.stringify({ name, description, image: fileUrl });
 
     try {
       console.log(1);
 
-      const res = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', data, {
+      const res = await axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', json, {
         headers: {
           Authorization: `Bearer ${process.env.PINATA_JWT}`,
         },
@@ -100,6 +126,7 @@ export const RealEstateProvider = ({ children }) => {
       console.log(2);
 
       const url = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
+      console.log('url: ', url);
 
       console.log(3);
 
@@ -113,8 +140,17 @@ export const RealEstateProvider = ({ children }) => {
     }
   };
 
+  const fetchUnsoldProperties = async () => {
+    const provider = new ethers.providers.JsonRpcProvider();
+    const contract = fetchContract(provider); // we are using providers here because we are fetching all the NFTs, not just the ones that belong to a user
+
+    const data = await contract.fetchUnsoldProperties();
+
+    console.log(data);
+  };
+
   return (
-    <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount, uploadToIPFS, createNFT }}>
+    <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchUnsoldProperties }}>
       {children}
     </RealEstateContext.Provider>
   );

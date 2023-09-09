@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
+import { RealEstateContext } from '../context/RealEstateContext';
 import { Banner, OwnerCard, RealEstateCard } from '../components';
 import images from '../assets';
 import { makeId } from '../utils/makeId';
@@ -12,6 +13,10 @@ const Home = () => {
   const { theme } = useTheme();
   const parentRef = useRef(null);
   const scrollRef = useRef(null);
+
+  const { fetchUnsoldProperties } = useContext(RealEstateContext);
+
+  console.log('fetched Properties: ', fetchUnsoldProperties());
 
   const bannerTheme = () => (theme === 'light' ? 'bannerDay.jpg' : 'bannerNight.jpg');
 

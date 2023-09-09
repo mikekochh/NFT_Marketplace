@@ -19,7 +19,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
     Counters.Counter private _tokenIds;
     Counters.Counter private _propertiesSold; 
 
-    uint256 listingPrice = 0.025 ether; 
+    uint256 s_listingPrice = 0.025 ether; 
 
     address payable s_owner;
 
@@ -56,7 +56,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
     } 
 
     modifier ValueMustEqualListingPrice() {
-        if (msg.value != listingPrice) {
+        if (msg.value != s_listingPrice) {
             revert RealEstateMarketplace__ValueMustEqualListingPrice();
         }
         _;
@@ -74,11 +74,11 @@ contract RealEstateMarketplace is ERC721URIStorage {
     }
 
     function updateListingPrice(uint256 _listingPrice) public payable MustBeOwner(msg.sender) {
-        listingPrice = _listingPrice;
+        s_listingPrice = _listingPrice;
     }
 
     function getListingPrice() public view returns(uint256) {
-        return listingPrice;
+        return s_listingPrice;
     }
 
     function createToken(string memory tokenURI, uint256 price) public payable returns (uint) {
@@ -138,7 +138,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
 
         _transfer(address(this), msg.sender, tokenId);
 
-        payable(s_owner).transfer(listingPrice); 
+        payable(s_owner).transfer(s_listingPrice); 
         payable(s_idToProperty[tokenId].seller).transfer(msg.value); 
     }
 
