@@ -2,8 +2,10 @@
 const nextConfig = {
   reactStrictMode: true,
   env: {
-    REACT_APP_PROJECT_ID: process.env.REACT_APP_PROJECT_ID,
-    REACT_APP_PROJECT_SECRET_KEY: process.env.REACT_APP_PROJECT_SECRET_KEY,
+    PINATA_JWT: process.env.PINATA_JWT,
+  },
+  images: {
+    domains: ['gateway.pinata.cloud'],
   },
 };
 

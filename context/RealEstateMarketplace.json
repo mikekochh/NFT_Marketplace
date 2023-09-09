@@ -9,26 +9,6 @@
       "type": "constructor"
     },
     {
-      "inputs": [],
-      "name": "RealEstateMarketplace__GreaterThanZero",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "RealEstateMarketplace__MatchAskingPrice",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "RealEstateMarketplace__MustBeOwner",
-      "type": "error"
-    },
-    {
-      "inputs": [],
-      "name": "RealEstateMarketplace__ValueMustEqualListingPrice",
-      "type": "error"
-    },
-    {
       "anonymous": false,
       "inputs": [
         {
