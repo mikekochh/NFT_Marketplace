@@ -30,7 +30,6 @@ export const RealEstateProvider = ({ children }) => {
 
   useEffect(() => {
     checkIfWalletIsConnected();
-    createSale('test', '1', 'test', 'test');
   }, []);
 
   const connectWallet = async () => {
@@ -49,6 +48,8 @@ export const RealEstateProvider = ({ children }) => {
       data.append('file', file[0]);
       data.append('pinataOptions', JSON.stringify({ cidVersion: 0 }));
       data.append('pinataMetadata', JSON.stringify({ name: file[0].name }));
+
+      console.log('data', data);
 
       const res = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', data, {
         headers: {
@@ -84,18 +85,27 @@ export const RealEstateProvider = ({ children }) => {
     const { name, description, price } = formInput;
     if (!name || !description || !price || !fileUrl) return alert('Please fill in all fields');
 
-    const data = JSON.stringify({ name, description, image: fileUrl });
+    const data = new FormData();
+    data.append('pinataMetadata', JSON.stringify({ name, description, image: fileUrl }));
 
     try {
+      console.log(1);
+
       const res = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', data, {
         headers: {
           Authorization: `Bearer ${process.env.PINATA_JWT}`,
         },
       });
 
+      console.log(2);
+
       const url = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
 
+      console.log(3);
+
       await createSale(url, price);
+
+      console.log(4);
 
       router.push('/');
     } catch (error) {
@@ -104,7 +114,7 @@ export const RealEstateProvider = ({ children }) => {
   };
 
   return (
-    <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount, uploadToIPFS }}>
+    <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount, uploadToIPFS, createNFT }}>
       {children}
     </RealEstateContext.Provider>
   );

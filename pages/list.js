@@ -1,7 +1,8 @@
-import { useState, useMemo, useCallback, useContext, useRouter } from 'react';
+import { useState, useMemo, useCallback, useContext } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
+import { useRouter } from 'next/router';
 
 import { RealEstateContext } from '../context/RealEstateContext';
 import { Button, Input } from '../components';
