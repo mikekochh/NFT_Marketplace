@@ -38,7 +38,7 @@ const MyListedProperties = () => {
         ) : (
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
             {properties.map((realEstate) => (
-              <RealEstateCard key={realEstate.id} realEstate={realEstate} />
+              <RealEstateCard key={realEstate.id} realEstate={realEstate} displayAddress={false} />
             ))}
           </div>
         )}
@@ -77,8 +77,8 @@ const MyOwnedProperties = () => {
           </div>
         ) : (
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
-            {properties.map((realEstate) => (
-              <RealEstateCard key={realEstate.id} realEstate={realEstate} />
+            {properties.map((property) => (
+              <RealEstateCard key={property.id} realEstate={property} displayAddress={false} />
             ))}
           </div>
         )}

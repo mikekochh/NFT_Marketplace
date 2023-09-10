@@ -95,7 +95,7 @@ const Home = () => {
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
             {properties.map((i) => (
               <RealEstateCard
-                key={`realEstate-${i}`}
+                key={`property-${i.name}`}
                 realEstate={{
                   i,
                   name: i.name,
@@ -104,7 +104,9 @@ const Home = () => {
                   description: i.description,
                   price: i.price,
                   image: i.image,
+                  tokenId: i.tokenId,
                 }}
+                displayAddress
               />
             ))}
           </div>

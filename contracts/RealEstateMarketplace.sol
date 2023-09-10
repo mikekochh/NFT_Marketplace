@@ -138,8 +138,8 @@ contract RealEstateMarketplace is ERC721URIStorage {
 
         _transfer(address(this), msg.sender, tokenId);
 
-        payable(s_owner).transfer(s_listingPrice); 
-        payable(s_idToProperty[tokenId].seller).transfer(msg.value); 
+        payable(s_owner).transfer(s_listingPrice); // transfering listing price to owner
+        payable(s_idToProperty[tokenId].seller).transfer(msg.value);  // transferring the rest to seller
     }
 
     // get all market items still listed and not sold

@@ -23,9 +23,6 @@ export const RealEstateProvider = ({ children }) => {
 
     if (accounts.length) {
       setCurrentAccount(accounts[0]);
-      console.log('There are accounts.');
-    } else {
-      console.log('No accounts found');
     }
   };
 
@@ -46,17 +43,10 @@ export const RealEstateProvider = ({ children }) => {
   const uploadToIPFS = async (file) => {
     try {
       const data = new FormData();
-      console.log('testing');
-      console.log('file: ', file[0]);
-      console.log('testing');
-
       data.append('file', file[0]);
       data.append('pinataOptions', JSON.stringify({ cidVersion: 0 }));
       data.append('pinataMetadata', JSON.stringify({ name: file[0].name }));
       data.append('pinataContent', JSON.stringify({ name: file[0].name }));
-
-      console.log('data', data);
-
       const res = await axios.post('https://api.pinata.cloud/pinning/pinFileToIPFS', data, {
         headers: {
           Authorization: `Bearer ${process.env.PINATA_JWT}`,
@@ -82,9 +72,24 @@ export const RealEstateProvider = ({ children }) => {
 
     const transaction = await contract.createToken(url, price, { value: listingPrice.toString() });
 
+    await transaction.wait(); // waiting for metamask to confirm the transaction
+  };
+
+  const createPropertySale = async (tokenId, formInputPrice, router) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const price = ethers.utils.parseUnits(formInputPrice, 'ether');
+
+    const contract = fetchContract(signer);
+
+    const transaction = await contract.createPropertySale(tokenId, { value: price });
+
     await transaction.wait();
 
-    console.log('contract', contract);
+    router.push('/my-properties');
   };
 
   const listProperty = async (formInput, fileUrl, router) => {
@@ -167,7 +172,7 @@ export const RealEstateProvider = ({ children }) => {
   };
 
   return (
-    <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount, uploadToIPFS, listProperty, fetchUnsoldProperties, fetchMyProperties }}>
+    <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount, uploadToIPFS, listProperty, fetchUnsoldProperties, fetchMyProperties, createPropertySale }}>
       {children}
     </RealEstateContext.Provider>
   );

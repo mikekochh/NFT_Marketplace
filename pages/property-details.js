@@ -35,15 +35,15 @@ const PaymentBodyCmp = ({ property, currency }) => (
   </div>
 );
 
-const PaymentFooterCmp = ({ handleClose }) => (
+const PaymentFooterCmp = ({ handleClose, createPropertySale }) => (
   <div className="flex flex-row sm:flex-col">
-    <Button btnName="Checkout" classStyles="mr-5 sm:mb-5 rounded-xl sm:mr-0" handleClick={() => {}} />
+    <Button btnName="Checkout" classStyles="mr-5 sm:mb-5 rounded-xl sm:mr-0" handleClick={() => createPropertySale()} />
     <Button btnName="Cancel" classStyles="rounded-xl" handleClick={() => handleClose()} />
   </div>
 );
 
 const PropertyDetails = () => {
-  const { currentAccount, fetchContract, currency } = useContext(RealEstateContext);
+  const { currentAccount, currency, createPropertySale } = useContext(RealEstateContext);
   const [isLoading, setIsLoading] = useState(true);
 
   const [property, setProperty] = useState({ image: '', tokenId: '', name: '', price: '', seller: '' });
@@ -54,13 +54,9 @@ const PropertyDetails = () => {
 
   useEffect(() => {
     if (!router.isReady) return;
-    console.log('router.query: ', router.query);
     setProperty(router.query); // router.query is an object that contains the query string parameters
     setIsLoading(false);
   }, [router.isReady]);
-
-  console.log(property);
-  console.log('image: ', property.image);
 
   if (isLoading) return <Loader />;
 
@@ -108,7 +104,7 @@ const PropertyDetails = () => {
         <Modal
           header="Checkout"
           body={<PaymentBodyCmp property={property} currency={currency} />}
-          footer={<PaymentFooterCmp handleClose={() => setPaymentModal(false)} />}
+          footer={<PaymentFooterCmp handleClose={() => setPaymentModal(false)} createPropertySale={() => createPropertySale(property.tokenId, property.price, router)} />}
           handleClose={() => setPaymentModal(false)}
         />
       )}

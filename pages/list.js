@@ -17,7 +17,6 @@ const List = () => {
 
   const onDrop = useCallback(async (acceptedFile) => {
     // upload image to the ipfs
-    console.log('acceptedFile: ', acceptedFile);
     const url = await uploadToIPFS(acceptedFile);
 
     setFileUrl(url);

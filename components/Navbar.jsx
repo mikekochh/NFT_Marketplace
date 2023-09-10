@@ -41,8 +41,6 @@ const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
 const ButtonGroup = () => {
   const { connectWallet, currentAccount } = useContext(RealEstateContext);
 
-  console.log({ currentAccount });
-
   return currentAccount ? <div /> : (
     <Button classStyles="mx-2 rounded-xl" btnName="Connect" handleClick={() => connectWallet()} />
   );
