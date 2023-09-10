@@ -3,9 +3,9 @@ import Footer from './Footer';
 import Button from './Button';
 import Banner from './Banner';
 import OwnerCard from './OwnerCard';
-import RealEstateCard from './RealEstateCard';
+import PropertyCard from './PropertyCard';
 import Input from './Input';
 import Loader from './Loader';
 import Modal from './Modal';
 
-export { Navbar, Footer, Button, Banner, OwnerCard, RealEstateCard, Input, Loader, Modal };
+export { Navbar, Footer, Button, Banner, OwnerCard, PropertyCard, Input, Loader, Modal };

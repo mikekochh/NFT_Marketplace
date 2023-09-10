@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
 import { RealEstateContext } from '../context/RealEstateContext';
-import { Banner, OwnerCard, RealEstateCard } from '../components';
+import { Banner, OwnerCard, PropertyCard } from '../components';
 import images from '../assets';
 import { makeId } from '../utils/makeId';
 
@@ -94,9 +94,9 @@ const Home = () => {
           </div>
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
             {properties.map((i) => (
-              <RealEstateCard
+              <PropertyCard
                 key={`property-${i.name}`}
-                realEstate={{
+                property={{
                   i,
                   name: i.name,
                   seller: i.seller,

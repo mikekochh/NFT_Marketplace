@@ -33,10 +33,8 @@ const List = () => {
     // setIsLoading(false);
   }, [router.isReady]);
 
-  console.log('formInput: ', formInput.image);
-
   if (formInput.image.length !== 0) {
-    fileUrl = formInput.image;
+    setFileUrl(formInput.image);
   }
 
   // only when one of the isDrag changes do we re-render this function, instead of hav

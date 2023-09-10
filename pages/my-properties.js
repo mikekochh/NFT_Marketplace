@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
-import { Banner, RealEstateCard, Loader } from '../components';
+import { Banner, PropertyCard, Loader } from '../components';
 
 import { RealEstateContext } from '../context/RealEstateContext';
 
@@ -37,8 +37,8 @@ const MyListedProperties = () => {
           </div>
         ) : (
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
-            {properties.map((realEstate) => (
-              <RealEstateCard key={realEstate.id} realEstate={realEstate} displayAddress={false} />
+            {properties.map((property) => (
+              <PropertyCard key={property.id} property={property} displayAddress={false} />
             ))}
           </div>
         )}
@@ -78,7 +78,7 @@ const MyOwnedProperties = () => {
         ) : (
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
             {properties.map((property) => (
-              <RealEstateCard key={property.id} realEstate={property} displayAddress={false} />
+              <PropertyCard key={property.id} realEstate={property} displayAddress={false} />
             ))}
           </div>
         )}

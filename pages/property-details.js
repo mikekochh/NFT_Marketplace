@@ -2,7 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Button, RealEstateCard, Loader, Modal } from '../components';
+import { Button, PropertyCard, Loader, Modal } from '../components';
 
 import { RealEstateContext } from '../context/RealEstateContext';
 
