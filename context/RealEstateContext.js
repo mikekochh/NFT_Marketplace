@@ -46,6 +46,10 @@ export const RealEstateProvider = ({ children }) => {
   const uploadToIPFS = async (file) => {
     try {
       const data = new FormData();
+      console.log('testing');
+      console.log('file: ', file[0]);
+      console.log('testing');
+
       data.append('file', file[0]);
       data.append('pinataOptions', JSON.stringify({ cidVersion: 0 }));
       data.append('pinataMetadata', JSON.stringify({ name: file[0].name }));
@@ -83,56 +87,23 @@ export const RealEstateProvider = ({ children }) => {
     console.log('contract', contract);
   };
 
-  // const createNFT = async (formInput, fileUrl, router) => {
-  //   const { name, description, price } = formInput;
-  //   if (!name || !description || !price || !fileUrl) return alert('Please fill in all fields');
-
-  //   const data = new FormData();
-  //   data.append('pinataMetadata', JSON.stringify({ name, description, image: fileUrl }));
-
-  //   try {
-  //     const response = await fetch('/api/uploadToPinata', {
-  //       method: 'POST',
-  //       body: data,
-  //     });
-
-  //     console.log('Are we getting here? Hey: ', response.ok);
-  //     console.log('response: ', response);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  const createNFT = async (formInput, fileUrl, router) => {
-    console.log('createNFT');
+  const listProperty = async (formInput, fileUrl, router) => {
     const { name, description, price } = formInput;
     if (!name || !description || !price || !fileUrl) return alert('Please fill in all fields');
-
-    const data = new FormData();
-    data.append('pinataMetadata', JSON.stringify({ name }));
-    data.append('pinataContent', JSON.stringify({ name, description, image: fileUrl }));
 
     const json = JSON.stringify({ name, description, image: fileUrl });
 
     try {
-      console.log(1);
-
       const res = await axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', json, {
         headers: {
           Authorization: `Bearer ${process.env.PINATA_JWT}`,
+          'Content-Type': 'application/json',
         },
       });
 
-      console.log(2);
-
       const url = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
-      console.log('url: ', url);
-
-      console.log(3);
 
       await createSale(url, price);
-
-      console.log(4);
 
       router.push('/');
     } catch (error) {
@@ -146,11 +117,57 @@ export const RealEstateProvider = ({ children }) => {
 
     const data = await contract.fetchUnsoldProperties();
 
-    console.log(data);
+    const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
+      const tokenURI = await contract.tokenURI(tokenId);
+      const { data: { image, name, description } } = await axios.get(tokenURI);
+      const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether');
+
+      return {
+        price,
+        tokenId: tokenId.toNumber(),
+        seller,
+        owner,
+        image,
+        name,
+        description,
+        tokenURI,
+      };
+    }));
+
+    return items;
+  };
+
+  const fetchMyProperties = async (type) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+    const contract = fetchContract(signer);
+
+    const data = type === 'listed' ? await contract.fetchMyListedProperties() : await contract.fetchMyPurchasedProperties();
+
+    const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
+      const tokenURI = await contract.tokenURI(tokenId);
+      const { data: { image, name, description } } = await axios.get(tokenURI);
+      const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether');
+
+      return {
+        price,
+        tokenId: tokenId.toNumber(),
+        seller,
+        owner,
+        image,
+        name,
+        description,
+        tokenURI,
+      };
+    }));
+
+    return items;
   };
 
   return (
-    <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount, uploadToIPFS, createNFT, fetchUnsoldProperties }}>
+    <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount, uploadToIPFS, listProperty, fetchUnsoldProperties, fetchMyProperties }}>
       {children}
     </RealEstateContext.Provider>
   );

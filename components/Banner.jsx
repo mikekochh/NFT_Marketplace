@@ -8,7 +8,7 @@ const Banner = ({ bannerImage, bannerName }) => {
       <img
         className="w-full h-72 object-cover"
         src={bannerImage}
-        alt="bannerDubai"
+        alt="banner"
       />
       <div className="absolute inset-0 flex items-center justify-center">
         <p className="dark:text-nft-black text-nft-black text-4xl font-bold">{bannerName}</p>

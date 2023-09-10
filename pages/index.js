@@ -9,6 +9,7 @@ import { makeId } from '../utils/makeId';
 
 const Home = () => {
   const [hideButtons, setHideButtons] = useState(false);
+  const [properties, setProperties] = useState([]);
 
   const { theme } = useTheme();
   const parentRef = useRef(null);
@@ -16,7 +17,11 @@ const Home = () => {
 
   const { fetchUnsoldProperties } = useContext(RealEstateContext);
 
-  console.log('fetched Properties: ', fetchUnsoldProperties());
+  useEffect(() => {
+    fetchUnsoldProperties().then((items) => {
+      setProperties(items);
+    });
+  }, []);
 
   const bannerTheme = () => (theme === 'light' ? 'bannerDay.jpg' : 'bannerNight.jpg');
 
@@ -43,14 +48,14 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-    isScrollable();
-    window.addEventListener('resize', isScrollable);
+  // useEffect(() => {
+  //   isScrollable();
+  //   window.addEventListener('resize', isScrollable);
 
-    return () => {
-      window.removeEventListener('resize', isScrollable);
-    };
-  });
+  //   return () => {
+  //     window.removeEventListener('resize', isScrollable);
+  //   };
+  // });
 
   return (
     <div className="flex justify-center">
@@ -88,17 +93,17 @@ const Home = () => {
             <div>SearchBar</div>
           </div>
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
-            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-
+            {properties.map((i) => (
               <RealEstateCard
                 key={`realEstate-${i}`}
                 realEstate={{
                   i,
-                  name: `NFT Estate ${i}`,
-                  seller: `0x${makeId(3)}...${makeId(4)}`,
-                  owner: `0x${makeId(3)}...${makeId(4)}`,
-                  description: 'Sample Description NFT Estate',
-                  price: (10 - i * 0.234).toFixed(2),
+                  name: i.name,
+                  seller: i.seller,
+                  owner: i.owner,
+                  description: i.description,
+                  price: i.price,
+                  image: i.image,
                 }}
               />
             ))}

@@ -12,11 +12,12 @@ const List = () => {
   const [fileUrl, setFileUrl] = useState(null);
   const [formInput, setFormInput] = useState({ price: '', name: '', description: '' });
   const { theme } = useTheme();
-  const { uploadToIPFS, createNFT } = useContext(RealEstateContext);
+  const { uploadToIPFS, listProperty } = useContext(RealEstateContext);
   const router = useRouter();
 
   const onDrop = useCallback(async (acceptedFile) => {
     // upload image to the ipfs
+    console.log('acceptedFile: ', acceptedFile);
     const url = await uploadToIPFS(acceptedFile);
 
     setFileUrl(url);
@@ -90,7 +91,7 @@ const List = () => {
           handleClick={(e) => setFormInput({ ...formInput, price: e.target.value })}
         />
         <div className="mt-7 w-full flex justify-end">
-          <Button btnName="List Property" classStyles="rounded-xl" handleClick={() => createNFT(formInput, fileUrl, router)} />
+          <Button btnName="List Property" classStyles="rounded-xl" handleClick={() => listProperty(formInput, fileUrl, router)} />
         </div>
       </div>
     </div>
