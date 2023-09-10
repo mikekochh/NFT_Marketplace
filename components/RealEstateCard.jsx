@@ -7,6 +7,7 @@ import { shortenAddress } from '../utils/shortenAddress';
 import images from '../assets';
 
 const RealEstateCard = ({ key, realEstate, displayAddress }) => {
+  console.log('realEstate: ', realEstate);
   const { currency } = useContext(RealEstateContext);
 
   return (

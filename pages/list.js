@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useContext } from 'react';
+import { useState, useMemo, useCallback, useContext, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
@@ -10,13 +10,12 @@ import images from '../assets';
 
 const List = () => {
   const [fileUrl, setFileUrl] = useState(null);
-  const [formInput, setFormInput] = useState({ price: '', name: '', description: '' });
+  const [formInput, setFormInput] = useState({ price: '', name: '', description: '', image: '' });
   const { theme } = useTheme();
   const { uploadToIPFS, listProperty } = useContext(RealEstateContext);
   const router = useRouter();
 
   const onDrop = useCallback(async (acceptedFile) => {
-    // upload image to the ipfs
     const url = await uploadToIPFS(acceptedFile);
 
     setFileUrl(url);
@@ -27,6 +26,18 @@ const List = () => {
     accept: 'image/*',
     maxSize: 5000000,
   });
+
+  useEffect(() => {
+    if (!router.isReady) return;
+    setFormInput(router.query); // router.query is an object that contains the query string parameters
+    // setIsLoading(false);
+  }, [router.isReady]);
+
+  console.log('formInput: ', formInput.image);
+
+  if (formInput.image.length !== 0) {
+    fileUrl = formInput.image;
+  }
 
   // only when one of the isDrag changes do we re-render this function, instead of hav
   const fileStyle = useMemo(() => (
@@ -75,18 +86,21 @@ const List = () => {
           inputType="input"
           title="Address"
           placeholder="Property Address"
+          value={formInput.name}
           handleClick={(e) => setFormInput({ ...formInput, name: e.target.value })}
         />
         <Input
           inputType="textarea"
           title="Description"
           placeholder="Property Description"
+          value={formInput.description}
           handleClick={(e) => setFormInput({ ...formInput, description: e.target.value })}
         />
         <Input
           inputType="number"
           title="Price"
           placeholder="Listed Price"
+          value={formInput.price}
           handleClick={(e) => setFormInput({ ...formInput, price: e.target.value })}
         />
         <div className="mt-7 w-full flex justify-end">

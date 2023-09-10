@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { Button, RealEstateCard, Loader, Modal } from '../components';
 
 import { RealEstateContext } from '../context/RealEstateContext';
@@ -46,7 +47,7 @@ const PropertyDetails = () => {
   const { currentAccount, currency, createPropertySale } = useContext(RealEstateContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [property, setProperty] = useState({ image: '', tokenId: '', name: '', price: '', seller: '' });
+  const [property, setProperty] = useState({ image: '', tokenId: '', name: '', price: '', seller: '', owner: '' });
 
   const router = useRouter();
 
@@ -57,6 +58,15 @@ const PropertyDetails = () => {
     setProperty(router.query); // router.query is an object that contains the query string parameters
     setIsLoading(false);
   }, [router.isReady]);
+
+  const routeToRelist = () => {
+    router.push({
+      pathname: '/list',
+      query: property,
+    });
+  };
+
+  const sold = parseInt(property.seller, 16) === 0;
 
   if (isLoading) return <Loader />;
 
@@ -79,7 +89,7 @@ const PropertyDetails = () => {
             <div className="relative w-12 h-12 minlg:w-20 minlg:h-20 mr-2">
               <Image src={images.owner1} objectFit="cover" alt="owner" className="rounded-full" />
             </div>
-            <p className="font-poppins dark:text-white text-nft-black-1 text-xs minlg:text-base font-semibold">{shortenAddress(property.seller)}</p>
+            <p className="font-poppins dark:text-white text-nft-black-1 text-xs minlg:text-base font-semibold">{sold ? shortenAddress(property.owner) : shortenAddress(property.seller)}</p>
           </div>
         </div>
         <div className="mt-10 flex flex-col">
@@ -94,6 +104,8 @@ const PropertyDetails = () => {
         <div className="flex flex-row sm:flex-col mt-10">
           {currentAccount === property.seller.toLowerCase() ? (
             <p className="font-poppins dark:text-white text-nft-black-1 text-base font-normal border border-gray p-2">You own this property</p>
+          ) : sold ? (
+            <Button btnName="Relist Property" classStyles="mr-5 sm:mr-0 rounded-xl" handleClick={() => routeToRelist()} />
           ) : (
             <Button btnName={`Buy for ${property.price} ${currency}`} classStyles="mr-5 sm:mr-0 rounded-xl" handleClick={() => setPaymentModal(true)} />
           )}
