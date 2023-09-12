@@ -19,6 +19,10 @@ const MyListedProperties = () => {
     });
   }, []);
 
+  console.log('before properties');
+  console.log('properties: ', properties);
+  console.log('property length: ', properties.length);
+
   if (isLoading) {
     return (
       <div className="flexStart min-h-screen">
@@ -54,10 +58,14 @@ const MyOwnedProperties = () => {
   const { fetchMyProperties } = useContext(RealEstateContext);
 
   useEffect(() => {
+    console.log('were getting here');
     fetchMyProperties('owned').then((items) => {
       setProperties(items);
     });
+    console.log('but what about here');
   }, []);
+
+  console.log('properties: ', properties);
 
   if (isLoading) {
     return (
@@ -78,7 +86,7 @@ const MyOwnedProperties = () => {
         ) : (
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
             {properties.map((property) => (
-              <PropertyCard key={property.id} realEstate={property} displayAddress={false} />
+              <PropertyCard key={property.id} property={property} displayAddress={false} />
             ))}
           </div>
         )}

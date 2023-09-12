@@ -14,6 +14,7 @@ const List = () => {
   const { theme } = useTheme();
   const { uploadToIPFS, listProperty } = useContext(RealEstateContext);
   const router = useRouter();
+  let hasExecuted = false;
 
   const onDrop = useCallback(async (acceptedFile) => {
     const url = await uploadToIPFS(acceptedFile);
@@ -28,12 +29,13 @@ const List = () => {
   });
 
   useEffect(() => {
-    if (!router.isReady) return;
+    console.log('hasExecuted: ', hasExecuted);
+    if (!router.isReady || hasExecuted) return;
     setFormInput(router.query); // router.query is an object that contains the query string parameters
-    // setIsLoading(false);
+    hasExecuted = true;
   }, [router.isReady]);
 
-  if (formInput.image.length !== 0) {
+  if (formInput.image && formInput.image.length !== 0) {
     setFileUrl(formInput.image);
   }
 
