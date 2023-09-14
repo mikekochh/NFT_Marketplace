@@ -5,7 +5,7 @@ import { getTopSellers } from '../utils/getTopSellers';
 import { shortenAddress } from '../utils/shortenAddress';
 
 import { RealEstateContext } from '../context/RealEstateContext';
-import { Banner, OwnerCard, PropertyCard } from '../components';
+import { Banner, OwnerCard, PropertyCard, SearchBar } from '../components';
 import images from '../assets';
 import { makeId } from '../utils/makeId';
 
@@ -24,8 +24,6 @@ const Home = () => {
       setProperties(items);
     });
   }, []);
-
-  console.log('properties: ', properties);
 
   const bannerTheme = () => (theme === 'light' ? 'bannerDay.jpg' : 'bannerNight.jpg');
 
@@ -94,7 +92,9 @@ const Home = () => {
         <div className="mt-10">
           <div className="flexBetween mx-4 xs:mx-0 minlg:mx-8 sm:flex-col sm:items-start">
             <h1 className="font-poppins dark:text-white text-nft-black text-2xl minlg:text-4xl font-semibold sm:mb-4 flex-1">For Sale</h1>
-            <div>SearchBar</div>
+            <div>
+              {/* {<SearchBar />} */}
+            </div>
           </div>
           <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
             {properties.map((i) => (

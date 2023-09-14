@@ -29,13 +29,12 @@ const List = () => {
   });
 
   useEffect(() => {
-    console.log('hasExecuted: ', hasExecuted);
     if (!router.isReady || hasExecuted) return;
     setFormInput(router.query); // router.query is an object that contains the query string parameters
     hasExecuted = true;
   }, [router.isReady]);
 
-  if (formInput.image && formInput.image.length !== 0) {
+  if (formInput.image && formInput.image.length !== 0 && !fileUrl) {
     setFileUrl(formInput.image);
   }
 

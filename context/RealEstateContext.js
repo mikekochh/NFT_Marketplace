@@ -4,7 +4,6 @@ import Web3Modal from 'web3modal';
 import { ethers } from 'ethers';
 import axios from 'axios';
 import FormData from 'form-data';
-// import { pinataSDK } from '@pinata/sdk';
 
 import { MarketAddress, MarketAddressAbi } from './constants';
 
@@ -20,8 +19,7 @@ export const RealEstateProvider = ({ children }) => {
     if (!window.ethereum) { return alert('Please install MetaMask!'); }
 
     const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-
-    if (accounts.length) {
+    if (accounts.length && currentAccount !== accounts[0]) {
       setCurrentAccount(accounts[0]);
     } else {
       console.log('Wallet not connected');
