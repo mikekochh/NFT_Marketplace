@@ -10,11 +10,13 @@ import images from '../assets';
 
 const List = () => {
   const [fileUrl, setFileUrl] = useState(null);
-  const [formInput, setFormInput] = useState({ price: '', name: '', description: '', image: '' });
+  const [formInput, setFormInput] = useState({ price: '', name: '', description: '', image: '', tokenId: '' });
   const { theme } = useTheme();
   const { uploadToIPFS, listProperty } = useContext(RealEstateContext);
   const router = useRouter();
   let hasExecuted = false;
+
+  const relistOrList = router.query.name ? 'relist' : 'list';
 
   const onDrop = useCallback(async (acceptedFile) => {
     const url = await uploadToIPFS(acceptedFile);
@@ -38,6 +40,8 @@ const List = () => {
     setFileUrl(formInput.image);
   }
 
+  console.log('tokenId', formInput.tokenId);
+
   // only when one of the isDrag changes do we re-render this function, instead of hav
   const fileStyle = useMemo(() => (
     `dark:bg-nft-black-1 bg-white border dark:border-white border-nft-gray-2 flex flex-col items-center p-5 rounded-sm border-dashed
@@ -50,7 +54,7 @@ const List = () => {
   return (
     <div className="flex justify-center sm:px-4 p-12">
       <div className="w-3/5 md:w-full">
-        <h1 className="font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold sm:mb-4 flex-1">List New Property</h1>
+        <h1 className="font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold sm:mb-4 flex-1">{relistOrList === 'relist' ? 'Relist Property' : 'List New Property' }</h1>
         <div className="mt-16">
           <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-2xl">{fileUrl ? 'Property Image' : 'Upload Property Image' }</p>
           <div className="mt-4">
@@ -103,7 +107,11 @@ const List = () => {
           handleClick={(e) => setFormInput({ ...formInput, price: e.target.value })}
         />
         <div className="mt-7 w-full flex justify-end">
-          <Button btnName="List Property" classStyles="rounded-xl" handleClick={() => listProperty(formInput, fileUrl, router)} />
+          <Button
+            btnName={relistOrList === 'relist' ? 'Relist Property' : 'List Property'}
+            classStyles="rounded-xl"
+            handleClick={() => listProperty(formInput, fileUrl, router, relistOrList)}
+          />
         </div>
       </div>
     </div>

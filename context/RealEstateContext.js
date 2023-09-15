@@ -70,7 +70,9 @@ export const RealEstateProvider = ({ children }) => {
 
     const listingPrice = await contract.getListingPrice();
 
-    const transaction = await contract.createToken(url, price, { value: listingPrice.toString() });
+    console.log('last id check: ', id);
+
+    const transaction = isReselling ? await contract.relistProperty(id, url, price, { value: listingPrice.toString() }) : await contract.createToken(url, price, { value: listingPrice.toString() });
 
     await transaction.wait(); // waiting for metamask to confirm the transaction
   };
@@ -92,13 +94,14 @@ export const RealEstateProvider = ({ children }) => {
     router.push('/my-properties');
   };
 
-  const listProperty = async (formInput, fileUrl, router) => {
+  const listProperty = async (formInput, fileUrl, router, relistOrList) => {
     const { name, description, price } = formInput;
     if (!name || !description || !price || !fileUrl) return alert('Please fill in all fields');
 
-    const json = JSON.stringify({ name, description, image: fileUrl });
+    const relist = relistOrList === 'relist';
 
     try {
+      const json = JSON.stringify({ name, description, image: fileUrl });
       const res = await axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', json, {
         headers: {
           Authorization: `Bearer ${process.env.PINATA_JWT}`,
@@ -108,7 +111,9 @@ export const RealEstateProvider = ({ children }) => {
 
       const url = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
 
-      await createSale(url, price);
+      console.log('tokenId', formInput.tokenId);
+
+      await createSale(url, price, relist, formInput.tokenId);
 
       router.push('/');
     } catch (error) {

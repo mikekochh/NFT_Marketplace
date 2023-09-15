@@ -81,7 +81,8 @@ contract RealEstateMarketplace is ERC721URIStorage {
         return s_listingPrice;
     }
 
-    function createToken(string memory tokenURI, uint256 price) public payable returns (uint) {
+
+    function createToken(string memory tokenURI, uint256 price) public payable returns (uint256) {
         _tokenIds.increment();
 
         uint256 newTokenId = _tokenIds.current();
@@ -90,6 +91,14 @@ contract RealEstateMarketplace is ERC721URIStorage {
         _setTokenURI(newTokenId, tokenURI);
 
         listNewProperty(newTokenId, price);
+
+        return newTokenId;
+    }
+
+    
+    function relistProperty(uint256 tokenId, string memory tokenURI, uint256 price) public payable returns (uint256) {
+        uint256 newTokenId = createToken(tokenURI, price);
+        _burn(tokenId);
 
         return newTokenId;
     }
@@ -197,7 +206,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
         uint256 itemCount = 0;
 
         for (uint256 i = 1; i <= totalItemCount; i++) { 
-            if (s_idToProperty[i].owner == msg.sender) {
+            if (s_idToProperty[i].owner == msg.sender && s_idToProperty[i].sold == true) {
                 itemCount += 1;
             }
         }

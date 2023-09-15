@@ -47,7 +47,7 @@ const PropertyDetails = () => {
   const { currentAccount, currency, createPropertySale } = useContext(RealEstateContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [property, setProperty] = useState({ image: '', tokenId: '', name: '', price: '', seller: '', owner: '' });
+  const [property, setProperty] = useState({ image: '', tokenId: '', name: '', price: '', seller: '', owner: '', relist: true });
 
   const router = useRouter();
 
@@ -67,6 +67,8 @@ const PropertyDetails = () => {
   };
 
   const sold = parseInt(property.seller, 16) === 0;
+
+  console.log('property', property);
 
   if (isLoading) return <Loader />;
 
