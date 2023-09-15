@@ -14,7 +14,7 @@ const MyListedProperties = () => {
   const { fetchMyProperties } = useContext(RealEstateContext);
 
   useEffect(() => {
-    fetchMyProperties('listed').then((items) => {
+    fetchMyProperties().then((items) => {
       setProperties(items);
     });
   }, []);
@@ -47,18 +47,21 @@ const MyListedProperties = () => {
   );
 };
 
-const MyOwnedProperties = () => {
+const PropertiesComponent = ({ ownedOrListed }) => {
   const [properties, setProperties] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activeSelect, setActiveSelect] = useState('Recently added');
-  const [propertiesCopy, setPropertiesCopy] = useState([]);
+  const [propertiesOriginal, setPropertiesOriginal] = useState([]);
 
   const { fetchMyProperties } = useContext(RealEstateContext);
 
+  const propertyTitles = ownedOrListed === 'owned' ? 'My Properties' : 'Listed Properties';
+  const noPropertyMessage = ownedOrListed === 'owned' ? 'No Properties Owned' : 'No Properties Listed';
+
   useEffect(() => {
-    fetchMyProperties('owned').then((items) => {
+    fetchMyProperties(ownedOrListed).then((items) => {
       setProperties(items);
-      setPropertiesCopy(items);
+      setPropertiesOriginal(items);
     });
   }, []);
 
@@ -69,36 +72,30 @@ const MyOwnedProperties = () => {
       </div>
     );
   }
-  
+
   const onHandleSearch = (value) => {
-    setProperties(properties.filter((property) => property.name.toLowerCase().includes(value.toLowerCase())));
+    setProperties(propertiesOriginal.filter((property) => property.name.toLowerCase().includes(value.toLowerCase())));
   };
 
   const onClearSearch = () => {
-    if (properties.length && propertiesCopy.length) {
-      setProperties(propertiesCopy);
+    if (propertiesOriginal.length) {
+      setProperties(propertiesOriginal);
     }
-  };
-
-  const clearSearch = () => {
-    fetchMyProperties('owned').then((items) => {
-      setProperties(items);
-    });
   };
 
   return (
     <div className="flex justify-center sm:px-4 p-12">
       <div className="w-full minmd:w-4/5">
-        <div className="font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold sm:mb-4 flex-1">My Properties</div>
+        <div className="font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold sm:mb-4 flex-1">{propertyTitles}</div>
+        <div className="flex-1 w-full flex flex-row sm:flex-col px-4 xs:px-0 minlg:px-8 py-12">
+          <SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} onHandleSearch={onHandleSearch} onClearSearch={onClearSearch} />
+        </div>
         {properties.length === 0 ? (
-          <div className="w-full m-2 flex justify-center ">
-            <p className="text-nft-black-1 dark:text-white font-poppins font-semibold text-2xl">No Properties Owned</p>
+          <div className="sm:px-4 p-12 w-full minmd:w-4/5 flexCenter flex-col">
+            <p className="text-nft-black-1 dark:text-white font-poppins font-semibold text-2xl">{noPropertyMessage}</p>
           </div>
         ) : (
-          <div className="sm:px-4 p-12 w-full minmd:w-4/5 flexCenter flex-col">
-            <div className="flex-1 w-full flex flex-row sm:flex-col px-4 xs:px-0 minlg:px-8">
-              <SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} onHandleSearch={onHandleSearch} onClearSearch={onClearSearch} />
-            </div>
+          <div className="sm:px-4 w-full minmd:w-4/5 flexCenter flex-col">
             <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
               {properties.map((property) => (
                 <PropertyCard key={property.id} property={property} displayAddress={false} />
@@ -130,8 +127,8 @@ const ProfileSection = () => {
 const MyProperties = () => (
   <div>
     <ProfileSection />
-    <MyOwnedProperties />
-    <MyListedProperties />
+    <PropertiesComponent ownedOrListed="owned" />
+    <PropertiesComponent ownedOrListed="listed" />
   </div>
 );
 

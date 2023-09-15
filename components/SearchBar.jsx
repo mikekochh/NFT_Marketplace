@@ -11,6 +11,7 @@ const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearc
   const { theme } = useTheme();
 
   useEffect(() => {
+    console.log('deboundedSearch', deboundedSearch);
     const timer = setTimeout(() => {
       setSearch(deboundedSearch);
     }, 500);
@@ -18,7 +19,6 @@ const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearc
     return () => clearTimeout(timer);
   }, [deboundedSearch]);
 
-  // this issue is happening here. This useEffect is running infinitely
   useEffect(() => {
     console.log('search', search);
     if (search) {
@@ -27,6 +27,11 @@ const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearc
       onClearSearch();
     }
   }, [search]);
+
+  const onClearSearch2 = () => {
+    setSearch('');
+    setDeboundedSearch('');
+  };
 
   return (
     <>
@@ -39,6 +44,7 @@ const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearc
           onChange={(e) => setDeboundedSearch(e.target.value)}
           value={deboundedSearch}
         />
+        <Image src={images.cross} objectFit="contain" width={20} height={20} alt="cross" className={`cursor-pointer ${theme === 'light' && 'filter invert'}`} onClick={() => setDeboundedSearch('')} />
       </div>
       <div onClick={() => setToggle((prevToggle) => !prevToggle)} className="relative flexBetween ml-4 sm:ml-0 sm:mt-2 min-w-190 cursor-pointer dark:bg-nft-black-2 bg-white border dark:border-nft-black-2 border-nft-gray-2 px-4 rounded-md">
         <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-xs">Recently Listed</p>
