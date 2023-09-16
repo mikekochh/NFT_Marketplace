@@ -11,7 +11,6 @@ const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearc
   const { theme } = useTheme();
 
   useEffect(() => {
-    console.log('deboundedSearch', deboundedSearch);
     const timer = setTimeout(() => {
       setSearch(deboundedSearch);
     }, 500);
@@ -20,7 +19,6 @@ const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearc
   }, [deboundedSearch]);
 
   useEffect(() => {
-    console.log('search', search);
     if (search) {
       onHandleSearch(search);
     } else {

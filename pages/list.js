@@ -16,14 +16,17 @@ const List = () => {
   const { uploadToIPFS, listProperty } = useContext(RealEstateContext);
   const router = useRouter();
   let hasExecuted = false;
-  console.log('hasClearedImage', hasClearedImage);
 
   const relistOrList = router.query.name ? 'relist' : 'list';
+
+  if (relistOrList === 'list' && formInput.tokenId !== '') {
+    setFormInput({ price: '', name: '', description: '', image: '', tokenId: '' });
+    setFileUrl(null);
+  }
 
   const onDrop = useCallback(async (acceptedFile) => {
     const url = await uploadToIPFS(acceptedFile);
     setFileUrl(url);
-    console.log('is this running?');
     setHasClearedImage(false);
   }, []);
 
@@ -34,7 +37,6 @@ const List = () => {
   });
 
   const clearImage = () => {
-    console.log('clear image');
     setFileUrl(null);
     setHasClearedImage(true);
   };
@@ -46,7 +48,6 @@ const List = () => {
   }, [router.isReady]);
 
   if (formInput.image && formInput.image.length !== 0 && !fileUrl && !hasClearedImage) {
-    console.log('testing');
     setFileUrl(formInput.image);
   }
 

@@ -63,4 +63,15 @@ describe('RealEstateMarketplace', () => {
     expect(userBalanceAfterSale).to.be.gt(userBalanceBeforeSale);
     expect(user2BalanceAfterSale).to.be.lt(user2BalanceBeforeSale);
   });
+
+  it('should return delisted property ownership to seller', async () => {
+    const transaction = await contract.connect(user).createToken('tokenURI', propertyPrice, { value: ethers.utils.parseEther('0.025') });
+    const receipt = await transaction.wait();
+    const tokenId = receipt.events[0].args.tokenId.toNumber();
+    expect(tokenId).to.be.gt(0);
+
+    const relistTransaction = await contract.connect(user).delistProperty(tokenId);
+    const tokenOwner = await contract.connect(user).getTokenOwner(tokenId);
+    expect(tokenOwner).to.equal(user.address);
+  });
 });

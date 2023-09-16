@@ -184,7 +184,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
         Property[] memory myProperties = new Property[](getMyNumberOfPurchasedProperties());
 
         for (uint256 i = 1; i <= totalItemCount; i++) {
-            if (s_idToProperty[i].owner == msg.sender && s_idToProperty[i].sold == true) {
+            if (s_idToProperty[i].owner == msg.sender) {
                 myProperties[currentIndex] = s_idToProperty[i];
                 currentIndex += 1;
             }
@@ -244,5 +244,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
         return s_owner;
     } 
 
-
+    function getTokenOwner(uint256 tokenId) external view returns (address) {
+        return s_idToProperty[tokenId].owner;
+    }
 }

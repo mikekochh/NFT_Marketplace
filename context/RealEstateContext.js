@@ -70,8 +70,6 @@ export const RealEstateProvider = ({ children }) => {
 
     const listingPrice = await contract.getListingPrice();
 
-    console.log('last id check: ', id);
-
     const transaction = isReselling ? await contract.relistProperty(id, url, price, { value: listingPrice.toString() }) : await contract.createToken(url, price, { value: listingPrice.toString() });
 
     await transaction.wait(); // waiting for metamask to confirm the transaction
@@ -85,14 +83,7 @@ export const RealEstateProvider = ({ children }) => {
 
     const contract = fetchContract(signer);
 
-    console.log('before');
-    console.log('contract', contract);
-
-    console.log('tokenId', tokenId);
-
     const transaction = await contract.delistProperty(tokenId);
-
-    console.log('after');
 
     await transaction.wait();
 
@@ -132,8 +123,6 @@ export const RealEstateProvider = ({ children }) => {
       });
 
       const url = `https://gateway.pinata.cloud/ipfs/${res.data.IpfsHash}`;
-
-      console.log('tokenId', formInput.tokenId);
 
       await createSale(url, price, relist, formInput.tokenId);
 

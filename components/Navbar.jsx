@@ -1,4 +1,5 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,6 +10,20 @@ import Button from './Button';
 
 // Helper component for menu items in nav bar
 const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (router.pathname === '/') {
+      setActive('Buy');
+    } else if (router.pathname === '/list') {
+      setActive('List');
+    } else if (router.pathname === '/rent') {
+      setActive('Rent');
+    } else if (router.pathname === '/my-properties') {
+      setActive('My Properties');
+    }
+  }, [router.pathname]);
+
   const generateLink = (i) => {
     switch (i) {
       case 0: return '/';
