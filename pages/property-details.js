@@ -9,11 +9,11 @@ import { RealEstateContext } from '../context/RealEstateContext';
 import images from '../assets';
 import { shortenAddress } from '../utils/shortenAddress';
 
-const PaymentBodyCmp = ({ property, currency }) => (
+const ModalBodyCmp = ({ property, currency, delisting }) => (
   <div className="flex flex-col">
     <div className="flexBetween font-poppins dark:text-white text-nft-black-1 font-semibold text-base minlg:text-xl">
       <p>Property</p>
-      <p>Subtotal</p>
+      <p>{delisting ? 'Listed Price' : 'Subtotal'}</p>
     </div>
     <div className="flexBetweenStart my-5">
       <div className="flex-1 flexStartCenter">
@@ -29,25 +29,35 @@ const PaymentBodyCmp = ({ property, currency }) => (
         <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-sm minlg:text-xl">{property.price} <span className="font-semibold">{currency}</span> </p>
       </div>
     </div>
-    <div className="flexBetween mt-10">
+    <div className="flexBetween mt-8">
       <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-sm minlg:text-xl">Total</p>
       <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-sm minlg:text-xl">{property.price} <span className="font-semibold">{currency}</span></p>
     </div>
   </div>
 );
 
-const PaymentFooterCmp = ({ handleClose, createPropertySale }) => (
+const ModalFooterCmp = ({ handleClose, createPropertySale, delisting, delistProperty }) => (
+
   <div className="flex flex-row sm:flex-col">
-    <Button btnName="Checkout" classStyles="mr-5 sm:mb-5 rounded-xl sm:mr-0" handleClick={() => createPropertySale()} />
-    <Button btnName="Cancel" classStyles="rounded-xl" handleClick={() => handleClose()} />
+    {delisting ? (
+      <div>
+        <Button btnName="Delist" classStyles="mr-5 sm:mb-5 rounded-xl sm:mr-0" handleClick={() => delistProperty()} />
+        <Button btnName="Cancel" classStyles="rounded-xl" handleClick={() => handleClose()} />
+      </div>
+    ) : (
+      <div>
+        <Button btnName="Checkout" classStyles="mr-5 sm:mb-5 rounded-xl sm:mr-0" handleClick={() => createPropertySale()} />
+        <Button btnName="Cancel" classStyles="rounded-xl" handleClick={() => handleClose()} />
+      </div>
+    )}
   </div>
 );
 
 const PropertyDetails = () => {
-  const { currentAccount, currency, createPropertySale } = useContext(RealEstateContext);
+  const { currentAccount, currency, createPropertySale, delistProperty } = useContext(RealEstateContext);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [property, setProperty] = useState({ image: '', tokenId: '', name: '', price: '', seller: '', owner: '', relist: true });
+  const [property, setProperty] = useState({ image: '', tokenId: '', name: '', price: '', seller: '', owner: '' }); // i removed relist variable here, not sure if broke
 
   const router = useRouter();
 
@@ -68,7 +78,12 @@ const PropertyDetails = () => {
 
   const sold = parseInt(property.seller, 16) === 0;
 
-  console.log('property', property);
+  const delisting = currentAccount === property.seller.toLowerCase();
+
+  const delistPropertySetup = async () => {
+    await delistProperty(property.tokenId, router);
+    setPaymentModal(false);
+  };
 
   if (isLoading) return <Loader />;
 
@@ -104,8 +119,8 @@ const PropertyDetails = () => {
         </div>
 
         <div className="flex flex-row sm:flex-col mt-10">
-          {currentAccount === property.seller.toLowerCase() ? (
-            <p className="font-poppins dark:text-white text-nft-black-1 text-base font-normal border border-gray p-2">You own this property</p>
+          {delisting ? (
+            <Button btnName="Delist Property" classStyles="mr-5 sm:mr-0 rounded-xl" handleClick={() => setPaymentModal(true)} />
           ) : sold ? (
             <Button btnName="Relist Property" classStyles="mr-5 sm:mr-0 rounded-xl" handleClick={() => routeToRelist()} />
           ) : (
@@ -116,9 +131,16 @@ const PropertyDetails = () => {
       </div>
       {paymentModal && (
         <Modal
-          header="Checkout"
-          body={<PaymentBodyCmp property={property} currency={currency} />}
-          footer={<PaymentFooterCmp handleClose={() => setPaymentModal(false)} createPropertySale={() => createPropertySale(property.tokenId, property.price, router)} />}
+          header={delisting ? 'Delist Property' : 'Checkout'}
+          body={<ModalBodyCmp property={property} currency={currency} delisting={delisting} />}
+          footer={(
+            <ModalFooterCmp
+              handleClose={() => setPaymentModal(false)}
+              createPropertySale={() => createPropertySale(property.tokenId, property.price, router)}
+              delisting={delisting}
+              delistProperty={delistPropertySetup}
+            />
+)}
           handleClose={() => setPaymentModal(false)}
         />
       )}

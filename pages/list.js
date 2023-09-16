@@ -10,18 +10,21 @@ import images from '../assets';
 
 const List = () => {
   const [fileUrl, setFileUrl] = useState(null);
+  const [hasClearedImage, setHasClearedImage] = useState(false);
   const [formInput, setFormInput] = useState({ price: '', name: '', description: '', image: '', tokenId: '' });
   const { theme } = useTheme();
   const { uploadToIPFS, listProperty } = useContext(RealEstateContext);
   const router = useRouter();
   let hasExecuted = false;
+  console.log('hasClearedImage', hasClearedImage);
 
   const relistOrList = router.query.name ? 'relist' : 'list';
 
   const onDrop = useCallback(async (acceptedFile) => {
     const url = await uploadToIPFS(acceptedFile);
-
     setFileUrl(url);
+    console.log('is this running?');
+    setHasClearedImage(false);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject } = useDropzone({
@@ -30,17 +33,22 @@ const List = () => {
     maxSize: 5000000,
   });
 
+  const clearImage = () => {
+    console.log('clear image');
+    setFileUrl(null);
+    setHasClearedImage(true);
+  };
+
   useEffect(() => {
     if (!router.isReady || hasExecuted) return;
     setFormInput(router.query); // router.query is an object that contains the query string parameters
     hasExecuted = true;
   }, [router.isReady]);
 
-  if (formInput.image && formInput.image.length !== 0 && !fileUrl) {
+  if (formInput.image && formInput.image.length !== 0 && !fileUrl && !hasClearedImage) {
+    console.log('testing');
     setFileUrl(formInput.image);
   }
-
-  console.log('tokenId', formInput.tokenId);
 
   // only when one of the isDrag changes do we re-render this function, instead of hav
   const fileStyle = useMemo(() => (
@@ -80,6 +88,7 @@ const List = () => {
             ) : (
               <div>
                 <Image src={fileUrl} width={256} height={256} alt="asset_file" />
+                <span onClick={() => clearImage()}><Image src={images.trash} width={100} height={100} className="cursor-pointer" /></span>
               </div>
             )}
           </div>

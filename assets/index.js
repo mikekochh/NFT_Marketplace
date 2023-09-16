@@ -39,6 +39,7 @@ import mkLogo from './mkLogo.png';
 import linkedin from './linkedin.png';
 import bannerNight from './bannerNight.jpg';
 import bannerDay from './bannerDay.jpg';
+import trash from './trash.png';
 
 export default {
   heartOutline,
@@ -82,4 +83,5 @@ export default {
   linkedin,
   bannerNight,
   bannerDay,
+  trash,
 };

@@ -14,8 +14,7 @@ const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
       case 0: return '/';
       case 1: return '/list';
       case 2: return '/rent';
-      case 3: return '/sell';
-      case 4: return '/my-properties';
+      case 3: return '/my-properties';
       default: return '/';
     }
   };
@@ -27,7 +26,7 @@ const MenuItems = ({ isMobile, active, setActive, setIsOpen }) => {
 
   return (
     <ul className={`list-none flexCenter flex-row ${isMobile && 'flex-col h-full'}`}>
-      {['Buy', 'List', 'Rent', 'Sell', 'My Properties'].map((item, i) => (
+      {['Buy', 'List', 'Rent', 'My Properties'].map((item, i) => (
         <li key={i} onClick={() => onClickActivity(item)} className={`md:text-3xl md:p-2 flex flex-row items-center font-poppins font-semibold text-base dark:hover:text-white hover:text-nft-dark mx-3 ${active === item ? 'dark:text-white text-nft-black-1' : 'dark:text-nft-gray-3 text-nft-gray-2'}`}>
           <Link href={generateLink(i)}>
             {item}
@@ -68,10 +67,6 @@ const Navbar = () => {
           </div>
         </Link>
       </div>
-
-      {/* <div className="justify-between md:w-1/2 w-1/3">
-        <p className="font-poppins lg:text-2xl pr-4 text-4xl md:text-xl sm:text-sm ">Real NFT Estates</p>
-      </div> */}
 
       {/* Section for light dark mode switch, larger devices */}
       <div className="flex flex-initial flex-row justify-end">

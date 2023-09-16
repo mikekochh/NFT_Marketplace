@@ -7,10 +7,13 @@ describe('RealEstateMarketplace', () => {
   let contract;
   let owner;
   let user;
+  let user2;
+
+  const propertyPrice = ethers.utils.parseEther('100');
 
   beforeEach(async () => {
     // Deploy the contract before each test
-    [owner, user] = await ethers.getSigners();
+    [owner, user, user2] = await ethers.getSigners();
     const Contract = await ethers.getContractFactory('RealEstateMarketplace');
     contract = await Contract.deploy();
     await contract.deployed();
@@ -36,25 +39,28 @@ describe('RealEstateMarketplace', () => {
     expect(await contract.getListingPrice()).to.equal(ethers.utils.parseEther('0.025'));
   });
 
-  it('should create a new token', async () => {
-    const tokenId = await contract.createToken('tokenURI', ethers.utils.parseEther('0.1'), { value: ethers.utils.parseEther('0.025') });
+  it('should create a new property token', async () => {
+    const transaction = await contract.createToken('tokenURI', propertyPrice, { value: ethers.utils.parseEther('0.025') });
+    const receipt = await transaction.wait();
+    const tokenId = receipt.events[0].args.tokenId.toNumber();
     expect(tokenId).to.be.gt(0);
   });
 
-  /// /////////////////////////
-  /// / bad tests /////////////
-  /// /////////////////////////
+  it('seller should receive money upon sale', async () => {
+    const transaction = await contract.connect(user).createToken('tokenURI', propertyPrice, { value: ethers.utils.parseEther('0.025') });
+    const receipt = await transaction.wait();
+    const tokenId = receipt.events[0].args.tokenId.toNumber();
+    expect(tokenId).to.be.gt(0);
 
-  //   it('should create a token and list a property', async () => {
-  //     const tokenId = await contract.createToken('tokenURI', ethers.utils.parseEther('0.03'));
-  //     const property = await contract.idToProperty(tokenId);
+    const userBalanceBeforeSale = await ethers.provider.getBalance(user.address);
+    const user2BalanceBeforeSale = await ethers.provider.getBalance(user2.address);
 
-  //     expect(property.tokenId).to.equal(tokenId);
-  //     expect(property.seller).to.equal(owner.address);
-  //     expect(property.owner).to.equal(contract.address);
-  //     expect(property.price).to.equal(ethers.utils.parseEther('0.03'));
-  //     expect(property.sold).to.be.false;
-  //   });
+    const transactionSell = await contract.connect(user2).createPropertySale(tokenId, { value: propertyPrice });
 
-  // Add more tests for other contract functions as needed
+    const userBalanceAfterSale = await ethers.provider.getBalance(user.address);
+    const user2BalanceAfterSale = await ethers.provider.getBalance(user2.address);
+
+    expect(userBalanceAfterSale).to.be.gt(userBalanceBeforeSale);
+    expect(user2BalanceAfterSale).to.be.lt(user2BalanceBeforeSale);
+  });
 });

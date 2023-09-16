@@ -77,6 +77,28 @@ export const RealEstateProvider = ({ children }) => {
     await transaction.wait(); // waiting for metamask to confirm the transaction
   };
 
+  const delistProperty = async (tokenId, router) => {
+    const web3Modal = new Web3Modal();
+    const connection = await web3Modal.connect();
+    const provider = new ethers.providers.Web3Provider(connection);
+    const signer = provider.getSigner();
+
+    const contract = fetchContract(signer);
+
+    console.log('before');
+    console.log('contract', contract);
+
+    console.log('tokenId', tokenId);
+
+    const transaction = await contract.delistProperty(tokenId);
+
+    console.log('after');
+
+    await transaction.wait();
+
+    router.push('/my-properties');
+  };
+
   const createPropertySale = async (tokenId, formInputPrice, router) => {
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
@@ -177,7 +199,17 @@ export const RealEstateProvider = ({ children }) => {
   };
 
   return (
-    <RealEstateContext.Provider value={{ currency, connectWallet, currentAccount, uploadToIPFS, listProperty, fetchUnsoldProperties, fetchMyProperties, createPropertySale }}>
+    <RealEstateContext.Provider value={{
+      currency,
+      connectWallet,
+      currentAccount,
+      uploadToIPFS,
+      listProperty,
+      fetchUnsoldProperties,
+      fetchMyProperties,
+      createPropertySale,
+      delistProperty }}
+    >
       {children}
     </RealEstateContext.Provider>
   );

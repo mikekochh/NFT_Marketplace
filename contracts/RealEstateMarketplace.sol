@@ -11,7 +11,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
     error RealEstateMarketplace__MustBeOwner();
     error RealEstateMarketplace__GreaterThanZero();
     error RealEstateMarketplace__ValueMustEqualListingPrice();
-    error RealEstateMarketplace__MatchAskingPrice();
+    error RealEstateMarketplace__MatchAskingPrice(uint256 msgValue, uint256 askingPrice);
 
 
     using Counters for Counters.Counter;
@@ -64,7 +64,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
 
     modifier MatchAskingPrice(uint256 amount) {
         if (msg.value != amount) {
-            revert RealEstateMarketplace__MatchAskingPrice();
+            revert RealEstateMarketplace__MatchAskingPrice({msgValue: msg.value, askingPrice: amount});
         }
         _;
     }
@@ -95,6 +95,15 @@ contract RealEstateMarketplace is ERC721URIStorage {
         return newTokenId;
     }
 
+    function delistProperty(uint256 tokenId) public {
+        s_idToProperty[tokenId].owner = payable(msg.sender);
+        s_idToProperty[tokenId].seller = payable(address(0));
+        s_idToProperty[tokenId].sold = true;
+
+        _propertiesSold.increment(); 
+
+        _transfer(address(this), msg.sender, tokenId);
+    }
     
     function relistProperty(uint256 tokenId, string memory tokenURI, uint256 price) public payable returns (uint256) {
         uint256 newTokenId = createToken(tokenURI, price);
@@ -139,16 +148,15 @@ contract RealEstateMarketplace is ERC721URIStorage {
     }
 
     function createPropertySale(uint256 tokenId) public payable MatchAskingPrice(s_idToProperty[tokenId].price) {
+        payable(s_idToProperty[tokenId].seller).transfer(msg.value);  // transferring the rest to seller
+        payable(s_owner).transfer(s_listingPrice); // transfering listing price to owner
+        _transfer(address(this), msg.sender, tokenId); // transfering token to buyer
+        
         s_idToProperty[tokenId].owner = payable(msg.sender);
         s_idToProperty[tokenId].seller = payable(address(0));
         s_idToProperty[tokenId].sold = true;
 
         _propertiesSold.increment(); 
-
-        _transfer(address(this), msg.sender, tokenId);
-
-        payable(s_owner).transfer(s_listingPrice); // transfering listing price to owner
-        payable(s_idToProperty[tokenId].seller).transfer(msg.value);  // transferring the rest to seller
     }
 
     // get all market items still listed and not sold
