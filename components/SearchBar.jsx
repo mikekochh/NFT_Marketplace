@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
 import images from '../assets';
 
-const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearch }) => {
+const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearch, newSearchSort }) => {
   const [search, setSearch] = useState('');
   const [toggle, setToggle] = useState(false);
   const [deboundedSearch, setDeboundedSearch] = useState(search);
   const { theme } = useTheme();
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -26,10 +27,25 @@ const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearc
     }
   }, [search]);
 
-  const onClearSearch2 = () => {
-    setSearch('');
-    setDeboundedSearch('');
+  const handleClickOutside = (e) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      setToggle(false);
+    }
   };
+
+  const handleClickOnItem = (item) => {
+    setActiveSelect(item);
+    newSearchSort(item);
+    setToggle(false);
+  };
+
+  useEffect(() => {
+    window.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      window.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [dropdownRef]);
 
   return (
     <>
@@ -44,8 +60,8 @@ const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearc
         />
         <Image src={images.cross} objectFit="contain" width={20} height={20} alt="cross" className={`cursor-pointer ${theme === 'light' && 'filter invert'}`} onClick={() => setDeboundedSearch('')} />
       </div>
-      <div onClick={() => setToggle((prevToggle) => !prevToggle)} className="relative flexBetween ml-4 sm:ml-0 sm:mt-2 min-w-190 cursor-pointer dark:bg-nft-black-2 bg-white border dark:border-nft-black-2 border-nft-gray-2 px-4 rounded-md">
-        <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-xs">Recently Listed</p>
+      <div ref={dropdownRef} onClick={() => setToggle((prevToggle) => !prevToggle)} className="relative flexBetween ml-4 sm:ml-0 sm:mt-2 min-w-190 cursor-pointer dark:bg-nft-black-2 bg-white border dark:border-nft-black-2 border-nft-gray-2 px-4 rounded-md">
+        <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-xs">{activeSelect}</p>
         <Image
           src={images.arrow}
           objectFit="contain"
@@ -56,8 +72,8 @@ const SearchBar = ({ activeSelect, setActiveSelect, onHandleSearch, onClearSearc
         />
         {toggle && (
         <div className="absolute top-full left-0 right-0 w-full mt-3 z-10 dark:bg-nft-black-2 bg-white border dark:border-nft-black-2 border-nft-gray-2 py-3 px-4 rounded-md">
-            {['Recently added', 'Price (low to high)', 'Price (high to low)'].map((item) => (
-              <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-xs my-3 cursor-pointer">{item}</p>
+            {['A-Z', 'Recently Listed', 'Price (low to high)', 'Price (high to low)'].map((item) => (
+              <p className="font-poppins dark:text-white text-nft-black-1 font-normal text-xs my-3 cursor-pointer" onClick={() => handleClickOnItem(item)}>{item}</p>
             ))}
         </div>
         )}

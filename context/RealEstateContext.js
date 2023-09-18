@@ -108,13 +108,15 @@ export const RealEstateProvider = ({ children }) => {
   };
 
   const listProperty = async (formInput, fileUrl, router, relistOrList) => {
+    const today = new Date();
+    const currentDate = `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
     const { name, description, price } = formInput;
     if (!name || !description || !price || !fileUrl) return alert('Please fill in all fields');
 
     const relist = relistOrList === 'relist';
 
     try {
-      const json = JSON.stringify({ name, description, image: fileUrl });
+      const json = JSON.stringify({ name, description, image: fileUrl, date: currentDate });
       const res = await axios.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', json, {
         headers: {
           Authorization: `Bearer ${process.env.PINATA_JWT}`,
@@ -140,7 +142,7 @@ export const RealEstateProvider = ({ children }) => {
 
     const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
       const tokenURI = await contract.tokenURI(tokenId);
-      const { data: { image, name, description } } = await axios.get(tokenURI);
+      const { data: { image, name, description, date } } = await axios.get(tokenURI);
       const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether');
 
       return {
@@ -152,6 +154,7 @@ export const RealEstateProvider = ({ children }) => {
         name,
         description,
         tokenURI,
+        date,
       };
     }));
 
@@ -167,7 +170,7 @@ export const RealEstateProvider = ({ children }) => {
 
     const data = type === 'listed' ? await contract.fetchMyListedProperties() : await contract.fetchMyPurchasedProperties();
 
-    const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
+    const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice, date }) => {
       const tokenURI = await contract.tokenURI(tokenId);
       const { data: { image, name, description } } = await axios.get(tokenURI);
       const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether');
@@ -181,6 +184,7 @@ export const RealEstateProvider = ({ children }) => {
         name,
         description,
         tokenURI,
+        date,
       };
     }));
 

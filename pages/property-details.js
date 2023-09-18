@@ -111,10 +111,11 @@ const PropertyDetails = () => {
         </div>
         <div className="mt-10 flex flex-col">
           <div className="w-full border-b dark:border-nft-black border-nft-gray-1 flex flex-row">
-            <p className="font-poppins dark:text-white text-nft-black-1 text-base font-normal mb-2">Details</p>
+            <p className="font-poppins dark:text-white text-nft-black-1 text-base font-bold mb-2">Details</p>
           </div>
           <div className="mt-3">
-            <p>{property.description}</p>
+            <p><span className="font-bold">Date Listed: </span>{property.date}</p>
+            <p><span className="font-bold">Description: </span>{property.description}</p>
           </div>
         </div>
 

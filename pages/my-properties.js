@@ -7,50 +7,10 @@ import { RealEstateContext } from '../context/RealEstateContext';
 import images from '../assets';
 import { shortenAddress } from '../utils/shortenAddress';
 
-const MyListedProperties = () => {
-  const [properties, setProperties] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const { fetchMyProperties } = useContext(RealEstateContext);
-
-  useEffect(() => {
-    fetchMyProperties().then((items) => {
-      setProperties(items);
-    });
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="flexStart min-h-screen">
-        <Loader />
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex justify-center sm:px-4 p-12">
-      <div className="w-full minmd:w-4/5">
-        <div className="font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold sm:mb-4 flex-1">My Listed Properties</div>
-        {properties.length === 0 ? (
-          <div className="w-full m-2 flex justify-center ">
-            <p className="text-nft-black-1 dark:text-white font-poppins font-semibold text-2xl">No properties found</p>
-          </div>
-        ) : (
-          <div className="mt-3 w-full flex flex-wrap justify-start md:justify-center">
-            {properties.map((property) => (
-              <PropertyCard key={property.id} property={property} displayAddress={false} />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
 const PropertiesComponent = ({ ownedOrListed }) => {
   const [properties, setProperties] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeSelect, setActiveSelect] = useState('Recently added');
+  const [activeSelect, setActiveSelect] = useState('Recently Listed');
   const [propertiesOriginal, setPropertiesOriginal] = useState([]);
 
   const { fetchMyProperties } = useContext(RealEstateContext);
