@@ -43,7 +43,7 @@ const List = () => {
 
   useEffect(() => {
     if (!router.isReady || hasExecuted) return;
-    setFormInput(router.query); // router.query is an object that contains the query string parameters
+    setFormInput(router.query);
     hasExecuted = true;
   }, [router.isReady]);
 
@@ -51,7 +51,6 @@ const List = () => {
     setFileUrl(formInput.image);
   }
 
-  // only when one of the isDrag changes do we re-render this function, instead of hav
   const fileStyle = useMemo(() => (
     `dark:bg-nft-black-1 bg-white border dark:border-white border-nft-gray-2 flex flex-col items-center p-5 rounded-sm border-dashed
     ${isDragActive && ' border-file-active'}

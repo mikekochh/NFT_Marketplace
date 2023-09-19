@@ -72,9 +72,9 @@ const ProfileSection = () => {
   const { currentAccount } = useContext(RealEstateContext);
   return (
     <div>
-      <Banner name="You Properties" childStyles="text-center mb-4" parentStyles="h-80 justify-center" />
+      <Banner bannerImage="profileBanner.jpg" bannerName="Your Properties" />
       <div className="flexCenter flex-col -mt-20 z-0">
-        <div className="flexCenter w-40 h-40 sm:w-36 sm:h-36 p-1 bg-nft-black-2 rounded-full">
+        <div className="flexCenter w-40 h-40 sm:w-36 sm:h-36 p-1 bg-nft-black-2 rounded-full z-10">
           <Image src={images.owner1} className="rounded-full object-cover" objectFit="cover" />
         </div>
         <p className="font-poppins dark:text-white text-nft-black-1 font-semibold text-2xl mt-6">{shortenAddress(currentAccount)}</p>

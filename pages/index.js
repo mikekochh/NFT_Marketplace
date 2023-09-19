@@ -84,14 +84,14 @@ const Home = () => {
     }
   };
 
-  // useEffect(() => {
-  //   isScrollable();
-  //   window.addEventListener('resize', isScrollable);
+  useEffect(() => {
+    isScrollable();
+    window.addEventListener('resize', isScrollable);
 
-  //   return () => {
-  //     window.removeEventListener('resize', isScrollable);
-  //   };
-  // });
+    return () => {
+      window.removeEventListener('resize', isScrollable);
+    };
+  });
 
   return (
     <div className="flex justify-center">
