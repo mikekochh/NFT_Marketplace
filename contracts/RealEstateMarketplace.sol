@@ -5,8 +5,6 @@ import { Counters } from "@openzeppelin/contracts/utils/Counters.sol";
 import { ERC721URIStorage } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-import { console } from "hardhat/console.sol";
-
 contract RealEstateMarketplace is ERC721URIStorage {
     error RealEstateMarketplace__MustBeOwner();
     error RealEstateMarketplace__GreaterThanZero();
@@ -214,7 +212,7 @@ contract RealEstateMarketplace is ERC721URIStorage {
         uint256 itemCount = 0;
 
         for (uint256 i = 1; i <= totalItemCount; i++) { 
-            if (s_idToProperty[i].owner == msg.sender && s_idToProperty[i].sold == true) {
+            if (s_idToProperty[i].owner == msg.sender) {
                 itemCount += 1;
             }
         }

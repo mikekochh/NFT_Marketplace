@@ -64,6 +64,22 @@ describe('RealEstateMarketplace', () => {
     expect(user2BalanceAfterSale).to.be.lt(user2BalanceBeforeSale);
   });
 
+  it('should make buyer owner of property after listing property', async () => {
+    const transaction = await contract.connect(user).createToken('tokenURI', propertyPrice, { value: ethers.utils.parseEther('0.025') });
+    const receipt = await transaction.wait();
+    const tokenId = receipt.events[0].args.tokenId.toNumber();
+    expect(tokenId).to.be.gt(0);
+
+    const userPurchasedPropertiesBeforePurchase = await contract.connect(user2).fetchMyPurchasedProperties();
+
+    const transactionPurchase = await contract.connect(user2).createPropertySale(tokenId, { value: propertyPrice });
+
+    const userPurchasedPropertiesAfterPurchase = await contract.connect(user2).fetchMyPurchasedProperties();
+
+    const tokenOwner = await contract.connect(user2).getTokenOwner(tokenId);
+    expect(tokenOwner).to.equal(user2.address);
+  });
+
   it('should return delisted property ownership to seller', async () => {
     const transaction = await contract.connect(user).createToken('tokenURI', propertyPrice, { value: ethers.utils.parseEther('0.025') });
     const receipt = await transaction.wait();

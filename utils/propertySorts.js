@@ -16,7 +16,6 @@ export const sortByAddress = (properties) => {
 };
 
 export const sortByRecentlyListed = (properties) => {
-  console.log('properties', properties);
   const sortedProperties = properties.sort((a, b) => {
     const dateA = new Date(a.date);
     const dateB = new Date(b.date);
@@ -24,7 +23,6 @@ export const sortByRecentlyListed = (properties) => {
     return dateB - dateA;
   });
 
-  console.log('sortedProperties', sortedProperties);
   return sortedProperties;
 };
 

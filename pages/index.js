@@ -64,7 +64,6 @@ const Home = () => {
   };
 
   const newSearchSort = (item) => {
-    console.log('Nerw Search Sort');
     switch (item) {
       case 'A-Z':
         setProperties(sortByAddress(properties));

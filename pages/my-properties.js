@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import { Banner, PropertyCard, Loader, SearchBar } from '../components';
+import { sortByAddress, sortByRecentlyListed, sortByPriceHighToLow, sortByPriceLowToHigh } from '../utils/propertySorts';
 
 import { RealEstateContext } from '../context/RealEstateContext';
 
@@ -43,12 +44,32 @@ const PropertiesComponent = ({ ownedOrListed }) => {
     }
   };
 
+  const newSearchSort = (item) => {
+    switch (item) {
+      case 'A-Z':
+        setProperties(sortByAddress(properties));
+        break;
+      case 'Recently Listed':
+        setProperties(sortByRecentlyListed(properties));
+        break;
+      case 'Price (low to high)':
+        setProperties(sortByPriceLowToHigh(properties));
+        break;
+      case 'Price (high to low)':
+        setProperties(sortByPriceHighToLow(properties));
+        break;
+      default:
+        setProperties(sortByAddress(properties));
+        break;
+    }
+  };
+
   return (
     <div className="flex justify-center sm:px-4 p-12">
       <div className="w-full minmd:w-4/5">
         <div className="font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold sm:mb-4 flex-1">{propertyTitles}</div>
         <div className="flex-1 w-full flex flex-row sm:flex-col px-4 xs:px-0 minlg:px-8 py-12">
-          <SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} onHandleSearch={onHandleSearch} onClearSearch={onClearSearch} />
+          <SearchBar activeSelect={activeSelect} setActiveSelect={setActiveSelect} onHandleSearch={onHandleSearch} onClearSearch={onClearSearch} newSearchSort={newSearchSort} />
         </div>
         {properties.length === 0 ? (
           <div className="sm:px-4 p-12 w-full minmd:w-4/5 flexCenter flex-col">

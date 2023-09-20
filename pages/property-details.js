@@ -76,6 +76,7 @@ const PropertyDetails = () => {
     });
   };
 
+  // const soldAndNotOwner = (parseInt(property.seller, 16) === 0 && currentAccount !== property.owner.toLowerCase());
   const sold = parseInt(property.seller, 16) === 0;
 
   const delisting = currentAccount === property.seller.toLowerCase();

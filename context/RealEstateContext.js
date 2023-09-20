@@ -170,9 +170,9 @@ export const RealEstateProvider = ({ children }) => {
 
     const data = type === 'listed' ? await contract.fetchMyListedProperties() : await contract.fetchMyPurchasedProperties();
 
-    const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice, date }) => {
+    const items = await Promise.all(data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
       const tokenURI = await contract.tokenURI(tokenId);
-      const { data: { image, name, description } } = await axios.get(tokenURI);
+      const { data: { image, name, description, date } } = await axios.get(tokenURI);
       const price = ethers.utils.formatUnits(unformattedPrice.toString(), 'ether');
 
       return {
